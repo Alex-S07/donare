@@ -1,0 +1,16 @@
+{
+  "name": "Donare - Donation Platform",
+  "short_name": "Donare",
+  "description": "A donation platform connecting donors with people in need",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

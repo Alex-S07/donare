@@ -1,0 +1,9 @@
+# Video Placeholder
+
+This directory is for video files used in the hero section.
+
+For production, you would add:
+- hero-video.mp4 (main video file)
+- hero-video.webm (alternative format for better browser support)
+
+The hero section will gracefully fall back to images if videos are not available.
