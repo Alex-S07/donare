@@ -131,6 +131,7 @@ export default function HeroSection() {
   };
 
   return (
+    
     <section 
       className="relative h-screen w-full overflow-hidden bg-black"
       onKeyDown={handleKeyDown}
@@ -138,6 +139,7 @@ export default function HeroSection() {
       role="region"
       aria-label="Hero carousel"
     >
+      {/* <div className="absolute inset-0 bg-black/80"></div> */}
       {/* Carousel Content */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -174,7 +176,7 @@ export default function HeroSection() {
       </AnimatePresence>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/70" />
 
       {/* Content */}
       <div className="absolute inset-0 flex items-center justify-center text-center text-white z-10">
