@@ -1,10 +1,23 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Home, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function NotFound() {
+  const router = useRouter();
+
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
   return (
     <main className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-purple-50">
       <div className="max-w-2xl w-full text-center">
@@ -14,11 +27,15 @@ export default function NotFound() {
               You have entered a broken page
             </h1>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-2">
-              <Button asChild variant="outline" size="lg" className="flex items-center space-x-2">
-                <Link href="#" onClick={e => { e.preventDefault(); window.history.back(); }} aria-label="Go Back">
-                  <ArrowLeft className="h-5 w-5" />
-                  <span>Go Back</span>
-                </Link>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="flex items-center space-x-2"
+                onClick={handleGoBack}
+                aria-label="Go Back"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span>Go Back</span>
               </Button>
               <Button asChild size="lg" className="flex items-center space-x-2">
                 <Link href="/" aria-label="Go Home">
