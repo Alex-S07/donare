@@ -67,11 +67,18 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Database error:', error);
+      console.error('Query details:', { provider, status, limit, offset });
       return NextResponse.json(
-        { error: 'Failed to fetch senders' },
+        { 
+          error: 'Failed to fetch senders',
+          details: error.message,
+          code: error.code
+        },
         { status: 500 }
       );
     }
+
+    console.log('Senders fetched:', senders?.length || 0, 'records');
 
     // Get total count for pagination
     let countQuery = supabaseAdmin

@@ -136,37 +136,37 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard Overview</h2>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               Monitor donations and platform activity
             </p>
           </div>
-          <Button onClick={fetchDashboardData} disabled={isLoading}>
+          <Button onClick={fetchDashboardData} disabled={isLoading} className="w-full sm:w-auto">
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {statCards.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
                         {stat.title}
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
                         {stat.value}
                       </p>
                     </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                      <Icon className={`h-6 w-6 ${stat.color}`} />
+                    <div className={`p-2 sm:p-3 rounded-full ${stat.bgColor} flex-shrink-0 ml-2`}>
+                      <Icon className={`h-4 w-4 sm:h-6 sm:w-6 ${stat.color}`} />
                     </div>
                   </div>
                 </CardContent>
@@ -176,7 +176,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Recent Donations */}
           <Card>
             <CardHeader>
@@ -296,18 +296,18 @@ export default function AdminDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button className="h-20 flex flex-col space-y-2">
-                <DollarSign className="h-6 w-6" />
-                <span>View All Donations</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Button className="h-16 sm:h-20 flex flex-col space-y-2">
+                <DollarSign className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-sm sm:text-base">View All Donations</span>
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                <UserCheck className="h-6 w-6" />
-                <span>Manage Receivers</span>
+              <Button variant="outline" className="h-16 sm:h-20 flex flex-col space-y-2">
+                <UserCheck className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-sm sm:text-base">Manage Receivers</span>
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                <Send className="h-6 w-6" />
-                <span>View Senders</span>
+              <Button variant="outline" className="h-16 sm:h-20 flex flex-col space-y-2 sm:col-span-2 lg:col-span-1">
+                <Send className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-sm sm:text-base">View Senders</span>
               </Button>
             </div>
           </CardContent>

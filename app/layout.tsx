@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ReactNode } from "react";
-import Navbar from "@/components/navigation/navbar";
-import Footer from "@/components/footer";
+import ConditionalNavbar from "@/components/conditional-navbar";
+import ConditionalFooter from "@/components/conditional-footer";
 import ErrorBoundary from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -66,11 +66,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <ErrorBoundary>
           <AuthProvider>
-            <Navbar />
+            <ConditionalNavbar />
             <main role="main" className="flex-1">
               {children}
             </main>
-            <Footer />
+            <ConditionalFooter />
             <SessionExpiryModal />
             <Toaster />
           </AuthProvider>
