@@ -49,7 +49,10 @@ export default function GoogleOAuthButton({
         
         if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
           popup?.close();
-          onSuccess?.(event.data.user);
+          onSuccess?.({
+            user: event.data.user,
+            token: event.data.token
+          });
           toast.success('Successfully signed in with Google!');
           window.removeEventListener('message', messageListener);
         } else if (event.data.type === 'GOOGLE_OAUTH_ERROR') {

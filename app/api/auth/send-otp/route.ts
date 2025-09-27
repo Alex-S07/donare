@@ -11,10 +11,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email } = sendOTPSchema.parse(body);
 
-    // Get client IP for rate limiting
+    // Get client IP and user agent
     const clientIP = request.headers.get('x-forwarded-for') || 
                     request.headers.get('x-real-ip') || 
                     '127.0.0.1';
+    const userAgent = request.headers.get('user-agent') || '';
 
     // Check rate limiting
     if (!AuthService.checkRateLimit(clientIP)) {
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send OTP
-    const result = await AuthService.sendSenderOTP(email);
+    const result = await AuthService.sendSenderOTP(email, clientIP, userAgent);
 
     if (result.success) {
       return NextResponse.json({ 

@@ -33,6 +33,38 @@ export interface Database {
           last_login?: string | null;
         };
       };
+      sender_otps: {
+        Row: {
+          id: string;
+          email: string;
+          otp_code: string;
+          created_at: string;
+          expires_at: string;
+          used: boolean;
+          ip_address: string | null;
+          user_agent: string | null;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          otp_code: string;
+          created_at?: string;
+          expires_at: string;
+          used?: boolean;
+          ip_address?: string | null;
+          user_agent?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          otp_code?: string;
+          created_at?: string;
+          expires_at?: string;
+          used?: boolean;
+          ip_address?: string | null;
+          user_agent?: string | null;
+        };
+      };
       money_donations: {
         Row: {
           id: number;
