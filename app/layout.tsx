@@ -5,6 +5,9 @@ import ConditionalFooter from "@/components/conditional-footer";
 import ErrorBoundary from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
+import { LoadingProvider } from "@/hooks/use-loading";
+import { GlobalLoading } from "@/components/ui/global-loading";
+import { RouteLoading } from "@/components/loading/route-loading";
 import SessionExpiryModal from "@/components/auth/session-expiry-modal";
 
 export const metadata = {
@@ -65,15 +68,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <ErrorBoundary>
-          <AuthProvider>
-            <ConditionalNavbar />
-            <main role="main" className="flex-1">
-              {children}
-            </main>
-            <ConditionalFooter />
-            <SessionExpiryModal />
-            <Toaster />
-          </AuthProvider>
+          <LoadingProvider>
+            <AuthProvider>
+              <ConditionalNavbar />
+              <main role="main" className="flex-1">
+                {children}
+              </main>
+              <ConditionalFooter />
+              <SessionExpiryModal />
+              <RouteLoading />
+              <Toaster />
+            </AuthProvider>
+          </LoadingProvider>
         </ErrorBoundary>
       </body>
     </html>
