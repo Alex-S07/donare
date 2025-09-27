@@ -219,7 +219,7 @@ export default function HeroSection() {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg font-semibold btn-hover-lift"
+              className="border-white text-black px-8 py-3 text-lg font-semibold btn-hover-lift"
             >
               Request Help
             </Button>
