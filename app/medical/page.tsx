@@ -12,28 +12,37 @@ export const metadata: Metadata = {
 
 export default function MedicalPage() {
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-red-600 to-red-800 text-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
+    <main className="min-h-screen">
+
+      <section 
+        className="relative h-screen flex items-center" 
+        style={{ 
+          backgroundImage: "url('/images/medical-bg.jpg')", 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/20 rounded-full">
-                <Heart className="h-16 w-16" />
+                {/* <Home className="h-16 w-16" /> */}
+                      <Heart className="h-16 w-16" />
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6">
-              Medical Assistance
+           Medical Assistance
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-red-100">
-              Providing essential medical support with safety, compliance, and compassion
+            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+           Providing essential medical support with safety, compliance, and compassion
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-red-600 hover:bg-red-50 px-8 py-3 text-lg font-semibold">
-                Donate Medical Supplies
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
+            Donate Medical Supplies
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-red-600 px-8 py-3 text-lg font-semibold">
-                Request Medical Aid
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+               Request Medical Aid
               </Button>
             </div>
           </div>
@@ -115,7 +124,7 @@ export default function MedicalPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
             <Card className="text-center">
               <CardHeader>
                 <Shield className="h-12 w-12 text-red-600 mx-auto mb-4" />
@@ -147,7 +156,7 @@ export default function MedicalPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  All prescription requests are verified by licensed healthcare professionals.
+                  All prescription requests are verified if issued by licensed healthcare professionals.
                 </p>
               </CardContent>
             </Card>
@@ -177,17 +186,19 @@ export default function MedicalPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+           
+
             <Card className="text-center">
               <CardHeader>
                 <div className="w-12 h-12 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   1
                 </div>
-                <CardTitle>Emergency Contact</CardTitle>
+                <CardTitle>Rapid Assessment</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Contact our 24/7 emergency hotline with medical documentation and urgent need details.
+                  Our Team reviews case urgency and verifies documentation within 2 hours.
                 </p>
               </CardContent>
             </Card>
@@ -196,20 +207,6 @@ export default function MedicalPage() {
               <CardHeader>
                 <div className="w-12 h-12 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   2
-                </div>
-                <CardTitle>Rapid Assessment</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Medical team reviews case urgency and verifies documentation within 2 hours.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  3
                 </div>
                 <CardTitle>Approval & Funding</CardTitle>
               </CardHeader>
@@ -220,19 +217,7 @@ export default function MedicalPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  4
-                </div>
-                <CardTitle>Follow-up Care</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Continued support and monitoring to ensure proper treatment and recovery.
-                </p>
-              </CardContent>
-            </Card>
+          
           </div>
         </div>
       </section>
@@ -342,7 +327,7 @@ export default function MedicalPage() {
             <Button size="lg" className="bg-white text-red-600 hover:bg-red-50 px-8 py-3 text-lg font-semibold">
               Donate Medical Supplies
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-red-600 px-8 py-3 text-lg font-semibold">
+            <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-red-600 px-8 py-3 text-lg font-semibold">
               Request Medical Aid
             </Button>
           </div>
