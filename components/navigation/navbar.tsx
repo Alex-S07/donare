@@ -3,8 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/use-auth';
+import UserTypeSelectionModal from '@/components/auth/user-type-selection-modal';
+import SenderAuthModal from '@/components/auth/sender-auth-modal';
+import ReceiverRegistrationModal from '@/components/auth/receiver-registration-modal';
 
 const navigationItems = [
   { name: 'Money', href: '/money', icon: '💰' },
@@ -19,6 +23,15 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('');
   const [scrolled, setScrolled] = useState(false);
+
+  // Authentication modals
+  const [showUserTypeModal, setShowUserTypeModal] = useState(false);
+  const [showSenderAuthModal, setShowSenderAuthModal] = useState(false);
+  const [showReceiverModal, setShowReceiverModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'signup' | 'login'>('signup');
+
+  // Auth state
+  const { isAuthenticated, userType, sender, receiver, logoutSender, logoutReceiver } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,6 +63,44 @@ export default function Navbar() {
     if (event.key === 'Escape') {
       closeMenu();
     }
+  };
+
+  // Handle authentication actions
+  const handleSignUp = () => {
+    setAuthMode('signup');
+    setShowUserTypeModal(true);
+  };
+
+  const handleLogin = () => {
+    setAuthMode('login');
+    setShowUserTypeModal(true);
+  };
+
+  const handleUserTypeSelection = (userType: 'sender' | 'receiver') => {
+    setShowUserTypeModal(false);
+
+    if (userType === 'sender') {
+      setShowSenderAuthModal(true);
+    } else {
+      setShowReceiverModal(true);
+    }
+  };
+
+  const handleLogout = () => {
+    if (userType === 'sender') {
+      logoutSender();
+    } else if (userType === 'receiver') {
+      logoutReceiver();
+    }
+  };
+
+  const getUserDisplayName = () => {
+    if (sender) {
+      return sender.email.split('@')[0];
+    } else if (receiver) {
+      return receiver.phone_number;
+    }
+    return '';
   };
 
   return (
@@ -110,6 +161,50 @@ export default function Navbar() {
                   </motion.div>
                 </Link>
               ))}
+
+              {/* Authentication Buttons */}
+              <div className="flex items-center space-x-2 ml-4">
+                {isAuthenticated ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 px-3 py-2 bg-primary/10 rounded-lg">
+                      <User className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">
+                        {getUserDisplayName()}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        ({userType === 'sender' ? 'Donor' : 'Recipient'})
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogin}
+                      className="text-foreground hover:text-primary"
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSignUp}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -181,12 +276,84 @@ export default function Navbar() {
                       </Link>
                     </motion.div>
                   ))}
+
+                  {/* Mobile Authentication */}
+                  <div className="pt-4 mt-4 border-t border-gray-200">
+                    {isAuthenticated ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-3 px-4 py-3 bg-primary/10 rounded-lg">
+                          <User className="h-5 w-5 text-primary" />
+                          <div>
+                            <div className="font-medium text-primary">
+                              {getUserDisplayName()}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {userType === 'sender' ? 'Donor' : 'Recipient'}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            closeMenu();
+                          }}
+                          className="flex items-center space-x-3 px-4 py-3 w-full text-left rounded-lg transition-all duration-300 text-foreground hover:bg-red-50 hover:text-red-600"
+                        >
+                          <LogOut className="h-5 w-5" />
+                          <span className="font-medium">Logout</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => {
+                            handleLogin();
+                            closeMenu();
+                          }}
+                          className="flex items-center space-x-3 px-4 py-3 w-full text-left rounded-lg transition-all duration-300 text-foreground hover:bg-primary/10 hover:text-primary"
+                        >
+                          <User className="h-5 w-5" />
+                          <span className="font-medium">Login</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleSignUp();
+                            closeMenu();
+                          }}
+                          className="flex items-center space-x-3 px-4 py-3 w-full text-left rounded-lg transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90"
+                        >
+                          <Heart className="h-5 w-5" />
+                          <span className="font-medium">Sign Up</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
+
+      {/* Authentication Modals */}
+      <UserTypeSelectionModal
+        open={showUserTypeModal}
+        onClose={() => setShowUserTypeModal(false)}
+        onSelectUserType={handleUserTypeSelection}
+        mode={authMode}
+      />
+
+      <SenderAuthModal
+        open={showSenderAuthModal}
+        onClose={() => setShowSenderAuthModal(false)}
+        mode={authMode}
+      />
+
+      <ReceiverRegistrationModal
+        open={showReceiverModal}
+        onClose={() => setShowReceiverModal(false)}
+        mode={authMode}
+      />
     </>
   );
 }

@@ -19,7 +19,10 @@ import {
   X,
   Shield,
   Bell,
-  Search
+  Search,
+  UserCheck,
+  Building2,
+  Send
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -43,6 +46,16 @@ const sidebarItems = [
     title: 'Donations',
     href: '/admin/donations',
     icon: DollarSign,
+  },
+  {
+    title: 'Manage Receivers',
+    href: '/admin/receivers',
+    icon: UserCheck,
+  },
+  {
+    title: 'View Senders',
+    href: '/admin/senders',
+    icon: Send,
   },
   {
     title: 'Users',

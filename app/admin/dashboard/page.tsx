@@ -12,7 +12,10 @@ import {
   Calendar,
   ArrowUpRight,
   ArrowDownRight,
-  RefreshCw
+  RefreshCw,
+  UserCheck,
+  Send,
+  Clock
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,6 +26,10 @@ interface DashboardStats {
   donations_last_7_days: number;
   active_admin_users: number;
   admin_actions_today: number;
+  total_senders: number;
+  active_sender_sessions: number;
+  total_receivers: number;
+  pending_receiver_applications: number;
 }
 
 interface RecentDonation {
@@ -110,16 +117,16 @@ export default function AdminDashboard() {
       bgColor: 'bg-blue-100',
     },
     {
-      title: 'This Month',
-      value: stats?.donations_last_30_days || 0,
-      icon: Calendar,
+      title: 'Donation Senders',
+      value: stats?.total_senders || 0,
+      icon: Send,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
     },
     {
-      title: 'Active Admins',
-      value: stats?.active_admin_users || 0,
-      icon: Users,
+      title: 'Pending Receivers',
+      value: stats?.pending_receiver_applications || 0,
+      icon: Clock,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
     },
@@ -295,12 +302,12 @@ export default function AdminDashboard() {
                 <span>View All Donations</span>
               </Button>
               <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                <Users className="h-6 w-6" />
-                <span>Manage Users</span>
+                <UserCheck className="h-6 w-6" />
+                <span>Manage Receivers</span>
               </Button>
               <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                <TrendingUp className="h-6 w-6" />
-                <span>Generate Report</span>
+                <Send className="h-6 w-6" />
+                <span>View Senders</span>
               </Button>
             </div>
           </CardContent>

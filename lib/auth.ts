@@ -1,12 +1,27 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { supabaseAdmin } from './supabase';
-import { AdminUser, AdminLoginRequest, AdminLoginResponse } from '@/types/database';
+import {
+  AdminUser,
+  AdminLoginRequest,
+  AdminLoginResponse,
+  DonationSender,
+  DonationReceiver,
+  SenderAuthRequest,
+  SenderAuthResponse,
+  ReceiverLoginRequest,
+  ReceiverLoginResponse
+} from '@/types/database';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-super-secret-refresh-key-change-in-production';
 const JWT_EXPIRES_IN = '1h';
 const JWT_REFRESH_EXPIRES_IN = '7d';
+
+// Sender session timeout (15 minutes)
+const SENDER_SESSION_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+// Receiver session timeout (24 hours)
+const RECEIVER_SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 // Rate limiting store (in production, use Redis)
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>();
@@ -288,7 +303,7 @@ export class AuthService {
 
       // Verify current password
       const isValidPassword = await this.verifyPassword(currentPassword, admin.password_hash);
-      
+
       if (!isValidPassword) {
         return { success: false, error: 'Current password is incorrect' };
       }
@@ -310,5 +325,506 @@ export class AuthService {
     } catch (error) {
       return { success: false, error: 'An error occurred while changing password' };
     }
+  }
+
+  // ===== DONATION SENDER AUTHENTICATION =====
+
+  // Generate sender JWT tokens
+  static generateSenderTokens(senderId: string, email: string) {
+    const payload = { senderId, email, userType: 'sender' };
+
+    const accessToken = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: '15m', // 15 minutes for senders
+      issuer: 'donare-sender',
+      audience: 'donare-platform'
+    });
+
+    return { accessToken };
+  }
+
+  // Authenticate sender with Google OAuth
+  static async authenticateSenderWithGoogle(
+    email: string,
+    providerId: string,
+    ipAddress: string
+  ): Promise<SenderAuthResponse> {
+    try {
+      // Check if sender already exists
+      let { data: sender, error } = await supabaseAdmin
+        .from('donation_senders')
+        .select('*')
+        .eq('email', email)
+        .eq('provider', 'google')
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        return { success: false, error: 'Database error occurred' };
+      }
+
+      // Create new sender if doesn't exist
+      if (!sender) {
+        const { data: newSender, error: insertError } = await supabaseAdmin
+          .from('donation_senders')
+          .insert({
+            email,
+            provider: 'google',
+            provider_id: providerId,
+            email_verified: true,
+            is_active: true
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          return { success: false, error: 'Failed to create sender account' };
+        }
+
+        sender = newSender;
+      }
+
+      if (!sender.is_active) {
+        return { success: false, error: 'Account is deactivated' };
+      }
+
+      // Update last login and session expiry
+      const sessionExpiresAt = new Date(Date.now() + SENDER_SESSION_TIMEOUT).toISOString();
+
+      await supabaseAdmin
+        .from('donation_senders')
+        .update({
+          last_login: new Date().toISOString(),
+          session_expires_at: sessionExpiresAt
+        })
+        .eq('id', sender.id);
+
+      // Generate tokens
+      const { accessToken } = this.generateSenderTokens(sender.id, sender.email);
+
+      return {
+        success: true,
+        token: accessToken,
+        sender: {
+          id: sender.id,
+          email: sender.email,
+          provider: sender.provider
+        }
+      };
+
+    } catch (error) {
+      console.error('Google auth error:', error);
+      return { success: false, error: 'Authentication failed' };
+    }
+  }
+
+  // Send OTP for email authentication
+  static async sendSenderOTP(email: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Generate 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Store OTP in a temporary table or cache (for demo, we'll use a simple approach)
+      // In production, use Redis or a dedicated OTP table
+
+      // For now, we'll simulate sending OTP
+      console.log(`OTP for ${email}: ${otp}`);
+
+      // TODO: Integrate with email service (SendGrid, AWS SES, etc.)
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: 'Failed to send OTP' };
+    }
+  }
+
+  // Verify OTP and authenticate sender
+  static async authenticateSenderWithOTP(
+    email: string,
+    otp: string,
+    ipAddress: string
+  ): Promise<SenderAuthResponse> {
+    try {
+      // TODO: Verify OTP from cache/database
+      // For demo purposes, accept any 6-digit OTP
+      if (!/^\d{6}$/.test(otp)) {
+        return { success: false, error: 'Invalid OTP format' };
+      }
+
+      // Check if sender already exists
+      let { data: sender, error } = await supabaseAdmin
+        .from('donation_senders')
+        .select('*')
+        .eq('email', email)
+        .eq('provider', 'email')
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        return { success: false, error: 'Database error occurred' };
+      }
+
+      // Create new sender if doesn't exist
+      if (!sender) {
+        const { data: newSender, error: insertError } = await supabaseAdmin
+          .from('donation_senders')
+          .insert({
+            email,
+            provider: 'email',
+            email_verified: true,
+            is_active: true
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          return { success: false, error: 'Failed to create sender account' };
+        }
+
+        sender = newSender;
+      }
+
+      if (!sender.is_active) {
+        return { success: false, error: 'Account is deactivated' };
+      }
+
+      // Update last login and session expiry
+      const sessionExpiresAt = new Date(Date.now() + SENDER_SESSION_TIMEOUT).toISOString();
+
+      await supabaseAdmin
+        .from('donation_senders')
+        .update({
+          last_login: new Date().toISOString(),
+          session_expires_at: sessionExpiresAt,
+          email_verified: true
+        })
+        .eq('id', sender.id);
+
+      // Generate tokens
+      const { accessToken } = this.generateSenderTokens(sender.id, sender.email);
+
+      return {
+        success: true,
+        token: accessToken,
+        sender: {
+          id: sender.id,
+          email: sender.email,
+          provider: sender.provider
+        }
+      };
+
+    } catch (error) {
+      console.error('OTP auth error:', error);
+      return { success: false, error: 'Authentication failed' };
+    }
+  }
+
+  // Get sender from token
+  static async getSenderFromToken(token: string): Promise<DonationSender | null> {
+    try {
+      const decoded = this.verifyToken(token);
+
+      if (decoded.userType !== 'sender') {
+        return null;
+      }
+
+      const { data: sender, error } = await supabaseAdmin
+        .from('donation_senders')
+        .select('*')
+        .eq('id', decoded.senderId)
+        .eq('is_active', true)
+        .single();
+
+      if (error || !sender) {
+        return null;
+      }
+
+      // Check if session is still valid
+      if (sender.session_expires_at && new Date(sender.session_expires_at) < new Date()) {
+        // Session expired, clear it
+        await supabaseAdmin
+          .from('donation_senders')
+          .update({ session_expires_at: null })
+          .eq('id', sender.id);
+
+        return null;
+      }
+
+      return sender;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  // Logout sender
+  static async logoutSender(senderId: string): Promise<{ success: boolean }> {
+    try {
+      await supabaseAdmin
+        .from('donation_senders')
+        .update({ session_expires_at: null })
+        .eq('id', senderId);
+
+      return { success: true };
+    } catch (error) {
+      return { success: false };
+    }
+  }
+
+  // ===== DONATION RECEIVER AUTHENTICATION =====
+
+  // Generate receiver JWT tokens
+  static generateReceiverTokens(receiverId: string, phoneNumber: string) {
+    const payload = { receiverId, phoneNumber, userType: 'receiver' };
+
+    const accessToken = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: '24h', // 24 hours for receivers
+      issuer: 'donare-receiver',
+      audience: 'donare-platform'
+    });
+
+    return { accessToken };
+  }
+
+  // Authenticate receiver with phone and password
+  static async authenticateReceiver(
+    credentials: ReceiverLoginRequest,
+    ipAddress: string
+  ): Promise<ReceiverLoginResponse> {
+    try {
+      const { phone_number, password } = credentials;
+
+      // Check rate limiting
+      if (!this.checkRateLimit(ipAddress)) {
+        return {
+          success: false,
+          error: 'Too many login attempts. Please try again in 15 minutes.'
+        };
+      }
+
+      // Find approved receiver
+      const { data: receiver, error } = await supabaseAdmin
+        .from('donation_receivers')
+        .select('*')
+        .eq('phone_number', phone_number)
+        .eq('status', 'approved')
+        .single();
+
+      if (error || !receiver) {
+        this.recordLoginAttempt(ipAddress, false);
+        return {
+          success: false,
+          error: 'Invalid phone number or password'
+        };
+      }
+
+      if (!receiver.password_hash) {
+        this.recordLoginAttempt(ipAddress, false);
+        return {
+          success: false,
+          error: 'Account not yet activated. Please contact admin.'
+        };
+      }
+
+      // Verify password
+      const isValidPassword = await this.verifyPassword(password, receiver.password_hash);
+
+      if (!isValidPassword) {
+        this.recordLoginAttempt(ipAddress, false);
+        return {
+          success: false,
+          error: 'Invalid phone number or password'
+        };
+      }
+
+      // Update last login and session expiry
+      const sessionExpiresAt = new Date(Date.now() + RECEIVER_SESSION_TIMEOUT).toISOString();
+
+      await supabaseAdmin
+        .from('donation_receivers')
+        .update({
+          last_login: new Date().toISOString(),
+          session_expires_at: sessionExpiresAt
+        })
+        .eq('id', receiver.id);
+
+      // Generate tokens
+      const { accessToken } = this.generateReceiverTokens(receiver.id, receiver.phone_number);
+
+      this.recordLoginAttempt(ipAddress, true);
+
+      return {
+        success: true,
+        token: accessToken,
+        receiver: {
+          id: receiver.id,
+          phone_number: receiver.phone_number,
+          receiver_type: receiver.receiver_type,
+          status: receiver.status
+        }
+      };
+
+    } catch (error) {
+      console.error('Receiver login error:', error);
+      return {
+        success: false,
+        error: 'An error occurred during login'
+      };
+    }
+  }
+
+  // Get receiver from token
+  static async getReceiverFromToken(token: string): Promise<DonationReceiver | null> {
+    try {
+      const decoded = this.verifyToken(token);
+
+      if (decoded.userType !== 'receiver') {
+        return null;
+      }
+
+      const { data: receiver, error } = await supabaseAdmin
+        .from('donation_receivers')
+        .select('*')
+        .eq('id', decoded.receiverId)
+        .eq('status', 'approved')
+        .single();
+
+      if (error || !receiver) {
+        return null;
+      }
+
+      // Check if session is still valid
+      if (receiver.session_expires_at && new Date(receiver.session_expires_at) < new Date()) {
+        // Session expired, clear it
+        await supabaseAdmin
+          .from('donation_receivers')
+          .update({ session_expires_at: null })
+          .eq('id', receiver.id);
+
+        return null;
+      }
+
+      return receiver;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  // Logout receiver
+  static async logoutReceiver(receiverId: string): Promise<{ success: boolean }> {
+    try {
+      await supabaseAdmin
+        .from('donation_receivers')
+        .update({ session_expires_at: null })
+        .eq('id', receiverId);
+
+      return { success: true };
+    } catch (error) {
+      return { success: false };
+    }
+  }
+
+  // ===== ADMIN RECEIVER MANAGEMENT =====
+
+  // Approve receiver application
+  static async approveReceiver(
+    receiverId: string,
+    adminId: number,
+    generatedPassword?: string
+  ): Promise<{ success: boolean; error?: string; credentials?: { phone_number: string; password: string } }> {
+    try {
+      // Get receiver details
+      const { data: receiver, error } = await supabaseAdmin
+        .from('donation_receivers')
+        .select('*')
+        .eq('id', receiverId)
+        .eq('status', 'pending')
+        .single();
+
+      if (error || !receiver) {
+        return { success: false, error: 'Receiver application not found' };
+      }
+
+      // Generate password if not provided
+      const password = generatedPassword || this.generateRandomPassword();
+      const passwordHash = await this.hashPassword(password);
+
+      // Update receiver status
+      const { error: updateError } = await supabaseAdmin
+        .from('donation_receivers')
+        .update({
+          status: 'approved',
+          password_hash: passwordHash,
+          approved_at: new Date().toISOString(),
+          approved_by_admin_id: adminId
+        })
+        .eq('id', receiverId);
+
+      if (updateError) {
+        return { success: false, error: 'Failed to approve receiver' };
+      }
+
+      // Log admin action
+      await this.logAdminAction(
+        adminId,
+        'APPROVE_RECEIVER',
+        'RECEIVER',
+        receiverId
+      );
+
+      return {
+        success: true,
+        credentials: {
+          phone_number: receiver.phone_number,
+          password: password
+        }
+      };
+
+    } catch (error) {
+      console.error('Approve receiver error:', error);
+      return { success: false, error: 'Failed to approve receiver' };
+    }
+  }
+
+  // Reject receiver application
+  static async rejectReceiver(
+    receiverId: string,
+    adminId: number,
+    rejectionReason: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabaseAdmin
+        .from('donation_receivers')
+        .update({
+          status: 'rejected',
+          rejection_reason: rejectionReason
+        })
+        .eq('id', receiverId)
+        .eq('status', 'pending');
+
+      if (error) {
+        return { success: false, error: 'Failed to reject receiver' };
+      }
+
+      // Log admin action
+      await this.logAdminAction(
+        adminId,
+        'REJECT_RECEIVER',
+        'RECEIVER',
+        receiverId
+      );
+
+      return { success: true };
+
+    } catch (error) {
+      console.error('Reject receiver error:', error);
+      return { success: false, error: 'Failed to reject receiver' };
+    }
+  }
+
+  // Generate random password for receivers
+  static generateRandomPassword(length: number = 12): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   }
 }
