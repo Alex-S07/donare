@@ -26,6 +26,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { toast } from 'sonner';
 import DonationCard from './donation-card';
 import SectionHeader from './section-header';
+import { LoadingSkeleton, CardSkeleton } from '@/components/ui/loading-skeleton';
 import { dummySections } from '@/data/dummy-donations';
 import { 
   DonationCategory, 
@@ -282,26 +283,43 @@ export default function DonationShowcase() {
                         : "grid-cols-1 max-w-4xl mx-auto"
                     )}
                   >
-                    <AnimatePresence mode="popLayout">
-                      {filteredItems.map((item) => (
-                        <motion.div
-                          key={item.id}
-                          layout
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <DonationCard
-                            item={item}
-                            onRequestItem={handleRequestItem}
-                            onDonateSimilar={handleDonateSimilar}
-                            isAuthenticated={isAuthenticated}
-                            userType={userType}
-                          />
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
+                    {state.loading ? (
+                      <AnimatePresence mode="popLayout">
+                        {Array.from({ length: 8 }).map((_, index) => (
+                          <motion.div
+                            key={`skeleton-${index}`}
+                            layout
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <CardSkeleton />
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    ) : (
+                      <AnimatePresence mode="popLayout">
+                        {filteredItems.map((item) => (
+                          <motion.div
+                            key={item.id}
+                            layout
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <DonationCard
+                              item={item}
+                              onRequestItem={handleRequestItem}
+                              onDonateSimilar={handleDonateSimilar}
+                              isAuthenticated={isAuthenticated}
+                              userType={userType}
+                            />
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    )}
                   </motion.div>
                 ) : (
                   <Card className="p-12 text-center">

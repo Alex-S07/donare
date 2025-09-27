@@ -1,32 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import GoogleOAuthButton from '@/components/auth/google-oauth-button';
+import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 
 export default function LoginExample() {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { loginSender } = useAuth();
 
   const handleGoogleSuccess = (userData: any) => {
     console.log('Google login success:', userData);
-    // Handle successful login - redirect, store token, etc.
-    // Example: router.push('/dashboard');
+    
+    if (userData.token) {
+      // Store the token in auth context
+      loginSender(userData.token);
+      
+      // Show success message
+      toast.success('Successfully signed in!');
+      
+      // Redirect to donations page
+      router.push('/donations');
+    } else {
+      toast.error('Authentication failed - no token received');
+    }
   };
 
   const handleGoogleError = (error: string) => {
     console.error('Google login error:', error);
-    // Handle login error
-  };
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Handle email/password login
-    setTimeout(() => setIsLoading(false), 1000);
+    toast.error(error);
   };
 
   return (
@@ -42,46 +45,6 @@ export default function LoginExample() {
             onError={handleGoogleError}
             className="w-full"
           />
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
-              </span>
-            </div>
-          </div>
-
-          {/* Traditional Login Form */}
-          <form onSubmit={handleEmailLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </Button>
-          </form>
         </CardContent>
       </Card>
     </div>

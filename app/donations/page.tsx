@@ -17,7 +17,7 @@ export default function DonationsPage() {
   return (
     <div className="h-full my-12">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent py-12 h-full">
+      <section className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent my-12 py-12 h-full">
         <div className="container mx-auto px-4 text-center h-full">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 py-10 h-full">
             Discover Available Donations
