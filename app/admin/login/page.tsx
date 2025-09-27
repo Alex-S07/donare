@@ -11,8 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import { Shield, Eye, EyeOff, Loader2, AlertCircle, Home } from 'lucide-react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
@@ -192,8 +193,22 @@ export default function AdminLoginPage() {
               </form>
             </Form>
 
+            {/* Back to Home Button */}
+            <div className="mt-6">
+              <Link href="/">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="sm"
+                >
+                  <Home className="h-4 w-4 mr-2" />
+                  Back to Home
+                </Button>
+              </Link>
+            </div>
+
             {/* Security Notice */}
-            <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <div className="flex items-start space-x-3">
                 <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                 <div>
