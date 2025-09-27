@@ -105,16 +105,16 @@ const Footer = () => {
               </Link>
               
               <p className="text-slate-300 text-sm leading-relaxed mb-6 max-w-md">
-                Connecting hearts, changing lives. Donare is India's leading donation platform 
-                that bridges the gap between generous donors and people in need, creating 
-                meaningful impact in communities across the country.
+            Connecting hearts, changing lives. Donare is India&apos;s leading donation platform 
+            that bridges the gap between generous donors and people in need, creating 
+            meaningful impact in communities across the country.
               </p>
 
               {/* Contact Information */}
               <div className="space-y-3">
-                {contactInfo.map((contact, index) => (
+                {contactInfo.map((contact) => (
                   <motion.a
-                    key={index}
+                    key={contact.text}
                     href={contact.href}
                     className="flex items-center space-x-3 text-slate-300 hover:text-white transition-colors duration-300 group"
                     whileHover={{ x: 5 }}
@@ -185,7 +185,7 @@ const Footer = () => {
             <div className="flex items-center space-x-6">
               <span className="text-sm text-slate-300 font-medium">Follow Us:</span>
               <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
+                {socialLinks.map((social) => (
                   <motion.a
                     key={social.name}
                     href={social.href}

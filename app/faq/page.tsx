@@ -73,7 +73,7 @@ export default function FAQPage() {
           answer: 'You can create an account by clicking "Sign Up" in the top navigation. Choose whether you want to donate (Sender) or receive help (Receiver), then follow the registration process. Senders can sign up with Google OAuth or email, while Receivers need to provide phone number and verification documents.'
         },
         {
-          question: 'What\'s the difference between a Sender and Receiver?',
+          question: 'What&apos;s the difference between a Sender and Receiver?',
           answer: 'Senders are donors who want to help others by making donations (money, clothes, etc.). Receivers are people in need who request help and must go through a verification process to ensure legitimacy. Both user types have different features and requirements on the platform.'
         },
         {
@@ -189,7 +189,7 @@ export default function FAQPage() {
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Find answers to common questions about using Donare. 
-            Can't find what you're looking for? Contact our support team.
+            Can&apos;t find what you&apos;re looking for? Contact our support team.
           </p>
         </div>
 
@@ -275,7 +275,7 @@ export default function FAQPage() {
             Still Need Help?
           </h3>
           <p className="text-slate-700 mb-6">
-            Can't find the answer you're looking for? Our support team is here to help you 24/7.
+            Can&apos;t find the answer you&apos;re looking for? Our support team is here to help you 24/7.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center space-x-3">

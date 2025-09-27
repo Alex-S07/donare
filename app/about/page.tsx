@@ -116,7 +116,7 @@ export default function AboutPage() {
             <p className="text-slate-700 leading-relaxed">
               To create a transparent, secure, and efficient platform that connects generous donors 
               with people in genuine need, ensuring that every donation makes a meaningful impact 
-              in someone's life while building stronger, more compassionate communities.
+              in someone&apos;s life while building stronger, more compassionate communities.
             </p>
           </motion.div>
 
