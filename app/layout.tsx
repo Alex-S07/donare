@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ReactNode } from "react";
 import Navbar from "@/components/navigation/navbar";
+import Footer from "@/components/footer";
 import ErrorBoundary from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -62,13 +63,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="font-sans antialiased ">
+      <body className="font-sans antialiased min-h-screen flex flex-col">
         <ErrorBoundary>
           <AuthProvider>
             <Navbar />
-            <main role="main">
+            <main role="main" className="flex-1">
               {children}
             </main>
+            <Footer />
             <SessionExpiryModal />
             <Toaster />
           </AuthProvider>
