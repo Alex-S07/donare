@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 interface CarouselItem {
   id: number;
@@ -64,6 +65,7 @@ export default function HeroSection() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const currentItem = carouselItems[currentIndex];
 
@@ -213,6 +215,7 @@ export default function HeroSection() {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg font-semibold btn-hover-lift"
+              onClick={() => router.push('/donations')}
             >
               Start Donating
             </Button>
@@ -220,6 +223,7 @@ export default function HeroSection() {
               size="lg" 
               variant="outline" 
               className="border-white text-black px-8 py-3 text-lg font-semibold btn-hover-lift"
+              onClick={() => router.push('/donations')}
             >
               Request Help
             </Button>

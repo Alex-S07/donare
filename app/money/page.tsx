@@ -1,17 +1,18 @@
+'use client';
+
 import React from 'react';
-// import Link from 'next/link';
 import { Metadata } from 'next';
 import { DollarSign, Shield, TrendingUp, Users, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-export const metadata: Metadata = {
-  title: 'Financial Support - Donare',
-  description: 'Request financial assistance or donate money to help families in need. Transparent process with income verification and public auditing.',
-};
+
 
 export default function MoneyPage() {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen ">
       {/* Hero Section */}
@@ -64,12 +65,20 @@ export default function MoneyPage() {
               Transparent financial assistance with verified need assessment and public accountability
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
-              Donate Money
-      
+              <Button 
+                size="lg" 
+                className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold"
+                onClick={() => router.push('/money/donate')}
+              >
+                Donate Money
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
-                     Request Financial Aid
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold"
+                onClick={() => router.push('/money/request')}
+              >
+                Request Financial Aid
               </Button>
             </div>
           </div>
@@ -280,10 +289,19 @@ export default function MoneyPage() {
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">Ready to Make a Difference?</h2>
           <p className="text-xl mb-8 text-green-100">Join our community of donors and recipients working together for positive change</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-green-600 hover:bg-green-50 px-8 py-3 text-lg font-semibold">
+            <Button 
+              size="lg" 
+              className="bg-white text-green-600 hover:bg-green-50 px-8 py-3 text-lg font-semibold"
+              onClick={() => router.push('/money/request')}
+            >
               Request Financial Aid
             </Button>
-            <Button size="lg" variant="outline" className="border-white  hover:bg-white text-green-600 px-8 py-3 text-lg font-semibold">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white hover:bg-white text-green-600 px-8 py-3 text-lg font-semibold"
+              onClick={() => router.push('/money/donate')}
+            >
               Donate Money
             </Button>
           </div>
