@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -150,6 +151,7 @@ const interestAreas = [
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function VolunteerApplicationPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<{[key: string]: File}>({});
@@ -210,19 +212,43 @@ export default function VolunteerApplicationPage() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      // Here you would submit the form data to your API
-      console.log('Form data:', data);
-      console.log('Uploaded files:', uploadedFiles);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Application submitted successfully! We will review your application and get back to you soon.');
-      
-      // Reset form or redirect
-      // router.push('/volunteer/application-success');
+      // Prepare application data for API submission
+      const applicationData = {
+        application_data: {
+          ...data,
+          // Add uploaded files info (for now, we'll handle file uploads separately)
+          uploaded_files: Object.keys(uploadedFiles).length > 0 ? Object.keys(uploadedFiles) : null
+        }
+      };
+
+      // Submit to API
+      const response = await fetch('/api/volunteers/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(applicationData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit application');
+      }
+
+      if (result.success) {
+        toast.success('Application submitted successfully! We will review your application and get back to you soon.');
+        
+        // Redirect to success page first, then to homepage
+        setTimeout(() => {
+          router.push('/volunteer/success');
+        }, 1500); // 1.5 second delay to show success message
+      } else {
+        throw new Error(result.error || 'Application submission failed');
+      }
     } catch (error) {
-      toast.error('Failed to submit application. Please try again.');
+      console.error('Application submission error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

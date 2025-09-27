@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import AdminLayout from '@/components/admin/admin-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -78,11 +79,6 @@ export default function AdminVolunteersPage() {
   const fetchVolunteers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('admin_token');
-      if (!token) {
-        toast.error('Authentication required');
-        return;
-      }
 
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -98,10 +94,7 @@ export default function AdminVolunteersPage() {
       }
 
       const response = await fetch(`/api/admin/volunteers?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        credentials: 'include'
       });
 
       const data = await response.json();
@@ -122,15 +115,12 @@ export default function AdminVolunteersPage() {
 
   const fetchStatistics = async () => {
     try {
-      const token = localStorage.getItem('admin_token');
-      if (!token) return;
-
       const response = await fetch('/api/admin/volunteers', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ action: 'statistics' })
       });
 
@@ -146,14 +136,8 @@ export default function AdminVolunteersPage() {
 
   const fetchVolunteerDetails = async (volunteerId: string) => {
     try {
-      const token = localStorage.getItem('admin_token');
-      if (!token) return;
-
       const response = await fetch(`/api/admin/volunteers/${volunteerId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        credentials: 'include'
       });
 
       const data = await response.json();
@@ -174,15 +158,12 @@ export default function AdminVolunteersPage() {
     if (!selectedVolunteer) return;
 
     try {
-      const token = localStorage.getItem('admin_token');
-      if (!token) return;
-
       const response = await fetch(`/api/admin/volunteers/${selectedVolunteer.id}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           action: approvalAction,
           [approvalAction === 'approve' ? 'approval_reason' : 'rejection_reason']: approvalReason,
@@ -210,15 +191,12 @@ export default function AdminVolunteersPage() {
 
   const handleStatusUpdate = async (volunteerId: string, newStatus: 'active' | 'inactive') => {
     try {
-      const token = localStorage.getItem('admin_token');
-      if (!token) return;
-
       const response = await fetch(`/api/admin/volunteers/${volunteerId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'update_status',
           status: newStatus
@@ -279,7 +257,8 @@ export default function AdminVolunteersPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <AdminLayout>
+      <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -699,6 +678,7 @@ export default function AdminVolunteersPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

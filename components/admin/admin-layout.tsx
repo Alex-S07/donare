@@ -12,8 +12,6 @@ import {
   LayoutDashboard,
   DollarSign,
   Users,
-  FileText,
-  Settings,
   LogOut,
   Menu,
   X,
@@ -22,7 +20,8 @@ import {
   Search,
   UserCheck,
   Building2,
-  Send
+  Send,
+  Heart
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -58,19 +57,9 @@ const sidebarItems = [
     icon: Send,
   },
   {
-    title: 'Users',
-    href: '/admin/users',
-    icon: Users,
-  },
-  {
-    title: 'Content',
-    href: '/admin/content',
-    icon: FileText,
-  },
-  {
-    title: 'Settings',
-    href: '/admin/settings',
-    icon: Settings,
+    title: 'Volunteers',
+    href: '/admin/volunteers',
+    icon: Heart,
   },
 ];
 

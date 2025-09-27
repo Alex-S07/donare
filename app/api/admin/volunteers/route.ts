@@ -1,26 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { AuthService } from '@/lib/auth';
+import { verifyAdminAuth } from '@/lib/admin-auth';
 import { Volunteer, VolunteerStatistics } from '@/types/database';
 
 // Get all volunteers with filtering and pagination
 export async function GET(request: NextRequest) {
   try {
     // Verify admin authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.substring(7);
-    const admin = await AuthService.getAdminFromToken(token);
+    const admin = await verifyAdminAuth(request);
     
     if (!admin) {
       return NextResponse.json(
-        { success: false, error: 'Invalid or expired token' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -84,20 +76,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Verify admin authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.substring(7);
-    const admin = await AuthService.getAdminFromToken(token);
+    const admin = await verifyAdminAuth(request);
     
     if (!admin) {
       return NextResponse.json(
-        { success: false, error: 'Invalid or expired token' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }

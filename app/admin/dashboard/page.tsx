@@ -30,6 +30,10 @@ interface DashboardStats {
   active_sender_sessions: number;
   total_receivers: number;
   pending_receiver_applications: number;
+  total_volunteers: number;
+  active_volunteers: number;
+  pending_volunteer_applications: number;
+  total_volunteer_hours: number;
 }
 
 interface RecentDonation {
@@ -117,6 +121,20 @@ export default function AdminDashboard() {
       bgColor: 'bg-blue-100',
     },
     {
+      title: 'Total Volunteers',
+      value: stats?.total_volunteers || 0,
+      icon: Users,
+      color: 'text-pink-600',
+      bgColor: 'bg-pink-100',
+    },
+    {
+      title: 'Active Volunteers',
+      value: stats?.active_volunteers || 0,
+      icon: UserCheck,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-100',
+    },
+    {
       title: 'Donation Senders',
       value: stats?.total_senders || 0,
       icon: Send,
@@ -129,6 +147,20 @@ export default function AdminDashboard() {
       icon: Clock,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
+    },
+    {
+      title: 'Pending Volunteers',
+      value: stats?.pending_volunteer_applications || 0,
+      icon: Clock,
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-100',
+    },
+    {
+      title: 'Volunteer Hours',
+      value: stats?.total_volunteer_hours || 0,
+      icon: Calendar,
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-100',
     },
   ];
 
@@ -150,7 +182,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6">
           {statCards.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -296,7 +328,7 @@ export default function AdminDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Button className="h-16 sm:h-20 flex flex-col space-y-2">
                 <DollarSign className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-sm sm:text-base">View All Donations</span>
@@ -305,9 +337,13 @@ export default function AdminDashboard() {
                 <UserCheck className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-sm sm:text-base">Manage Receivers</span>
               </Button>
-              <Button variant="outline" className="h-16 sm:h-20 flex flex-col space-y-2 sm:col-span-2 lg:col-span-1">
+              <Button variant="outline" className="h-16 sm:h-20 flex flex-col space-y-2">
                 <Send className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-sm sm:text-base">View Senders</span>
+              </Button>
+              <Button variant="outline" className="h-16 sm:h-20 flex flex-col space-y-2">
+                <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-sm sm:text-base">Manage Volunteers</span>
               </Button>
             </div>
           </CardContent>
