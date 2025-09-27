@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { Metadata } from 'next';
 import { DollarSign, Shield, TrendingUp, Users, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 
 export default function MoneyPage() {
   return (
-    <main className="min-h-screen pt-24 pb-16">
+    <main className="min-h-screen ">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-green-600 to-green-800 text-white">
+      {/* <section className="relative py-20 bg-gradient-to-br from-green-600 to-green-800 text-white">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
@@ -35,6 +35,41 @@ export default function MoneyPage() {
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 px-8 py-3 text-lg font-semibold">
                 <Link href="/money/donate">Donate Money</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+            <section 
+        className="relative h-screen flex items-center" 
+        style={{ 
+          backgroundImage: "url('/images/money-bg.jpg')", 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 bg-white/20 rounded-full">
+                {/* <Shirt className="h-16 w-16" /> */}
+              </div>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6">
+              Financial Support
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+              Transparent financial assistance with verified need assessment and public accountability
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
+              Donate Money
+      
+              </Button>
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+                     Request Financial Aid
               </Button>
             </div>
           </div>
@@ -215,7 +250,7 @@ export default function MoneyPage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Our Impact</h2>
-            <p className="text-lg text-muted-foreground">Real numbers showing the difference we're making together</p>
+            <p className="text-lg text-muted-foreground">Real numbers showing the difference we are making together</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -248,7 +283,7 @@ export default function MoneyPage() {
             <Button size="lg" className="bg-white text-green-600 hover:bg-green-50 px-8 py-3 text-lg font-semibold">
               Request Financial Aid
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 px-8 py-3 text-lg font-semibold">
+            <Button size="lg" variant="outline" className="border-white  hover:bg-white text-green-600 px-8 py-3 text-lg font-semibold">
               Donate Money
             </Button>
           </div>
