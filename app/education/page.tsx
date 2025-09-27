@@ -1,6 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { GraduationCap, BookOpen, Users, Shield, MapPin, Award } from 'lucide-react';
+import { BookOpen, Users, Shield, MapPin,Book } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,33 +12,46 @@ export const metadata: Metadata = {
 
 export default function EducationPage() {
   return (
-    <main className="min-h-screen pt-24 pb-16">
+    <main className="min-h-screen">
+
+
+    
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
+      <section 
+        className="relative h-screen flex items-center" 
+        style={{ 
+          backgroundImage: "url('/images/education-bg.jpg')", 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/20 rounded-full">
-                <GraduationCap className="h-16 w-16" />
+                {/* <Shirt className="h-16 w-16" /> */}
+                   <Book className="h-16 w-16" />
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6">
-              Educational Resources
+           Educational Resources
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100">
-              Empowering minds through accessible education materials and resources
+            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+            Empowering minds through accessible education materials and
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg font-semibold">
-                Donate Books
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
+            Donate Books
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg font-semibold">
-                Request Educational Materials
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+                    Request Educational Materials
               </Button>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Available Resources */}
       <section className="py-16 bg-white">
@@ -50,40 +63,25 @@ export default function EducationPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             <Card className="border-blue-200 hover:shadow-lg transition-shadow">
               <CardHeader className="text-center">
                 <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>NCERT Textbooks</CardTitle>
+                <CardTitle>Textbooks</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground text-center mb-4">
-                  Complete collection of NCERT textbooks for all grades and subjects.
+                  Complete collection of  textbooks for all grades and subjects.
                 </p>
                 <div className="space-y-2">
-                  <Badge variant="outline" className="w-full justify-center">Classes 1-12</Badge>
+                  <Badge variant="outline" className="w-full justify-center">Classes 6-12</Badge>
                   <Badge variant="outline" className="w-full justify-center">All Subjects</Badge>
                   <Badge variant="outline" className="w-full justify-center">Multiple Languages</Badge>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <Award className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Reference Materials</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground text-center mb-4">
-                  Study guides, practice books, and competitive exam preparation materials.
-                </p>
-                <div className="space-y-2">
-                  <Badge variant="outline" className="w-full justify-center">Study Guides</Badge>
-                  <Badge variant="outline" className="w-full justify-center">Practice Books</Badge>
-                  <Badge variant="outline" className="w-full justify-center">Exam Prep</Badge>
-                </div>
-              </CardContent>
-            </Card>
+
 
             <Card className="border-blue-200 hover:shadow-lg transition-shadow">
               <CardHeader className="text-center">
@@ -115,21 +113,8 @@ export default function EducationPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center">
-              <CardHeader>
-                <div className="text-4xl mb-4">🎨</div>
-                <CardTitle>Primary (1-5)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>Basic textbooks</li>
-                  <li>Activity books</li>
-                  <li>Art supplies</li>
-                  <li>Story books</li>
-                </ul>
-              </CardContent>
-            </Card>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
 
             <Card className="text-center">
               <CardHeader>
@@ -186,15 +171,15 @@ export default function EducationPage() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Program Features</h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             <Card className="border-blue-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Shield className="h-12 w-12 text-blue-600 mb-4" />
-                <CardTitle>Anti-Resale Tracking</CardTitle>
+                <CardTitle>Sort and Divide</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Digital tracking system prevents resale of donated educational materials, ensuring they reach genuine students.
+                The collected stationaries and Books are sorted,grouped, and distributed as per the needs
                 </p>
               </CardContent>
             </Card>
@@ -211,53 +196,7 @@ export default function EducationPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Users className="h-12 w-12 text-blue-600 mb-4" />
-                <CardTitle>Student Verification</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Thorough verification process ensures resources reach genuine students with verified enrollment status.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <BookOpen className="h-12 w-12 text-blue-600 mb-4" />
-                <CardTitle>Condition Assessment</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  All donated books undergo quality assessment to ensure they are in usable condition for learning.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Award className="h-12 w-12 text-blue-600 mb-4" />
-                <CardTitle>Academic Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Additional academic support and mentorship programs for students receiving educational assistance.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-blue-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <GraduationCap className="h-12 w-12 text-blue-600 mb-4" />
-                <CardTitle>Progress Tracking</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Monitor student progress and academic improvement to measure the impact of educational support.
-                </p>
-              </CardContent>
-            </Card>
+        
           </div>
         </div>
       </section>
@@ -367,7 +306,7 @@ export default function EducationPage() {
             <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg font-semibold">
               Donate Books
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg font-semibold">
+            <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-blue-600 px-8 py-3 text-lg font-semibold">
               Request Educational Materials
             </Button>
           </div>

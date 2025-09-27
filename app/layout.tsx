@@ -62,7 +62,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased ">
         <ErrorBoundary>
           <AuthProvider>
             <Navbar />

@@ -60,7 +60,7 @@ export default function HomePage() {
           "Income verification for fair distribution",
           "Maximum assistance limits based on family size",
           "Emergency fund for urgent medical needs",
-          "Full transaction tracking and public auditing"
+       
         ]}
         stats={[
           { label: "Families Helped", value: "2,847" },
@@ -95,7 +95,7 @@ export default function HomePage() {
       <CategorySection
         id="education"
         title="Educational Resources"
-        description="Educational resource sharing including NCERT textbooks (all grades), reference materials, notebooks, and stationery supplies. Free distribution for verified students with anti-resale digital tracking. Priority given to rural and underprivileged areas."
+        description="Educational resource sharing including  textbooks (6-12 grades), reference materials, notebooks, and stationery supplies. Priority given to rural and underprivileged areas."
         backgroundImage="/images/education-bg.jpg"
         icon={<GraduationCap className="h-8 w-8" />}
         primaryCTA="Donate Books"
@@ -104,7 +104,7 @@ export default function HomePage() {
         secondaryHref="/education/request"
         colorScheme="blue"
         features={[
-          "Complete NCERT textbook collection",
+      
           "Reference materials and study guides",
           "Notebooks and stationery supplies",
           "Digital tracking to prevent resale",
@@ -143,7 +143,7 @@ export default function HomePage() {
       <CategorySection
         id="medical"
         title="Medical Assistance"
-        description="Common medicines and legal medical products at subsidized costs. Prescription verification required. Strict compliance with pharmaceutical regulations and safety standards. Emergency medical fund available for verified cases."
+        description="Common medicines and legal medical products. Prescription verification required. Strict compliance with pharmaceutical regulations and safety standards. Emergency medical fund available for verified cases."
         backgroundImage="/images/medical-bg.jpg"
         icon={<Heart className="h-8 w-8" />}
         primaryCTA="Donate Medical Supplies"
@@ -152,7 +152,7 @@ export default function HomePage() {
         secondaryHref="/medical/request"
         colorScheme="red"
         features={[
-          "Common medicines at subsidized costs",
+     
           "Prescription verification required",
           "Pharmaceutical regulation compliance",
           "Emergency medical fund for urgent cases",
@@ -170,7 +170,7 @@ export default function HomePage() {
       <CategorySection
         id="electronics"
         title="Digital Devices"
-        description="Bridging the digital divide through refurbished laptops, smartphones, and tablets. Complete device inspection and data wiping process. Educational software pre-installed. Technical support included for 6 months."
+        description="Bridging the digital divide through  laptops, smartphones, and tablets. Complete device inspections."
         backgroundImage="/images/electronics-bg.jpg"
         icon={<Laptop className="h-8 w-8" />}
         primaryCTA="Donate Electronics"
@@ -180,10 +180,8 @@ export default function HomePage() {
         colorScheme="teal"
         features={[
           "Refurbished laptops, smartphones, and tablets",
-          "Complete device inspection and data wiping",
-          "Educational software pre-installed",
-          "6-month technical support included",
-          "Digital literacy training programs"
+          
+       
         ]}
         stats={[
           { label: "Devices Donated", value: "3,456" },
