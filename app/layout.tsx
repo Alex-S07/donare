@@ -60,10 +60,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased ">
         <ErrorBoundary>
-          <Navbar />
-          <main role="main">
+     
+
+      <Navbar  />
+
+          <main role="main" className="min-h-screen ">
             {children}
           </main>
           <Toaster />
