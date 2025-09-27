@@ -86,11 +86,12 @@ export default function CategorySection({
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.6,
-        staggerChildren: 0.2
+        duration: 0.8,
+        staggerChildren: 0.1,
+        delayChildren: 0.2
       }
     }
-  };
+  } as const;
 
   const itemVariants = {
     hidden: { y: 50, opacity: 0 },
@@ -98,11 +99,12 @@ export default function CategorySection({
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
-        ease: 'easeOut'
+        type: "spring",
+        bounce: 0.3,
+        duration: 0.8
       }
     }
-  };
+  } as const;
 
   return (
     <section
@@ -186,7 +188,7 @@ export default function CategorySection({
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg font-semibold btn-hover-lift"
+                className="border-white text-black px-8 py-3 text-lg font-semibold btn-hover-lift"
                 asChild
               >
                 <a href={secondaryHref}>
