@@ -185,6 +185,50 @@ const activeItem = navigationItems.find(
                 ))}
               </div>
 
+              {/* Authentication Buttons */}
+              <div className="hidden md:flex items-center space-x-2 ml-4">
+                {isAuthenticated ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 px-3 py-2 bg-primary/10 rounded-lg">
+                      <User className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">
+                        {getUserDisplayName()}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        ({userType === 'sender' ? 'Donor' : 'Recipient'})
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogin}
+                      className="text-foreground hover:text-primary"
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSignUp}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
+              </div>
+
               {/* Mobile Menu Button */}
               <Button
                 variant="ghost"
