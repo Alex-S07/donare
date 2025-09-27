@@ -1,6 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { Laptop, Smartphone, Tablet, Monitor, Shield, Zap } from 'lucide-react';
+import { Laptop, Smartphone, Tablet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,11 +12,20 @@ export const metadata: Metadata = {
 
 export default function ElectronicsPage() {
   return (
-    <main className="min-h-screen pt-24 pb-16">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-teal-600 to-teal-800 text-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
+
+        <section 
+        className="relative h-screen flex items-center" 
+        style={{ 
+          backgroundImage: "url('/images/electronics-bg.jpg')", 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/20 rounded-full">
                 <Laptop className="h-16 w-16" />
@@ -25,15 +34,15 @@ export default function ElectronicsPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6">
               Digital Devices
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-teal-100">
-              Bridging the digital divide through refurbished technology and digital literacy
+            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+  Bridging the digital divide through refurbished technology and digital literacy
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-teal-600 hover:bg-teal-50 px-8 py-3 text-lg font-semibold">
-                Donate Electronics
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
+            Donate Electronics
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-teal-600 px-8 py-3 text-lg font-semibold">
-                Request Digital Devices
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+            Request Digital Devices
               </Button>
             </div>
           </div>
@@ -45,9 +54,9 @@ export default function ElectronicsPage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Available Devices</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            {/* <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Professionally refurbished devices with educational software and technical support
-            </p>
+            </p> */}
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -63,7 +72,7 @@ export default function ElectronicsPage() {
                 <div className="space-y-2">
                   <Badge variant="outline" className="w-full justify-center">Windows & Linux</Badge>
                   <Badge variant="outline" className="w-full justify-center">Educational Software</Badge>
-                  <Badge variant="outline" className="w-full justify-center">6-Month Support</Badge>
+                  {/* <Badge variant="outline" className="w-full justify-center">6-Month Support</Badge> */}
                 </div>
               </CardContent>
             </Card>
@@ -80,7 +89,7 @@ export default function ElectronicsPage() {
                 <div className="space-y-2">
                   <Badge variant="outline" className="w-full justify-center">Android & iOS</Badge>
                   <Badge variant="outline" className="w-full justify-center">Learning Apps</Badge>
-                  <Badge variant="outline" className="w-full justify-center">Data Wiped</Badge>
+                  {/* <Badge variant="outline" className="w-full justify-center">Data Wiped</Badge> */}
                 </div>
               </CardContent>
             </Card>
@@ -97,7 +106,7 @@ export default function ElectronicsPage() {
                 <div className="space-y-2">
                   <Badge variant="outline" className="w-full justify-center">iPad & Android</Badge>
                   <Badge variant="outline" className="w-full justify-center">E-books Included</Badge>
-                  <Badge variant="outline" className="w-full justify-center">Kid-Safe Setup</Badge>
+                  {/* <Badge variant="outline" className="w-full justify-center">Kid-Safe Setup</Badge> */}
                 </div>
               </CardContent>
             </Card>
@@ -115,7 +124,7 @@ export default function ElectronicsPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
             <Card className="text-center">
               <CardHeader>
                 <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
@@ -130,38 +139,13 @@ export default function ElectronicsPage() {
               </CardContent>
             </Card>
 
+         
+
+           
             <Card className="text-center">
               <CardHeader>
                 <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   2
-                </div>
-                <CardTitle>Data Wiping</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Complete data wiping using military-grade security standards for privacy protection.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  3
-                </div>
-                <CardTitle>Software Installation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Fresh OS installation with educational software and productivity tools pre-installed.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  4
                 </div>
                 <CardTitle>Quality Assurance</CardTitle>
               </CardHeader>
@@ -179,78 +163,32 @@ export default function ElectronicsPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Program Features</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">User Instructions</h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+        
+
             <Card className="border-teal-200 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Shield className="h-12 w-12 text-teal-600 mb-4" />
-                <CardTitle>Complete Data Wiping</CardTitle>
+                {/* <Smartphone className="h-12 w-12 text-teal-600 mb-4" /> */}
+                <CardTitle className='text-2xl'>Donor</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Military-grade data wiping ensures complete privacy protection and security for all devices.
+Upload a 2-minute video of selected device running smoothly
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-teal-200 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Monitor className="h-12 w-12 text-teal-600 mb-4" />
-                <CardTitle>Educational Software</CardTitle>
+                {/* <Tablet className="h-12 w-12 text-teal-600 mb-4" /> */}
+                <CardTitle className='text-2xl'>Receiver</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Pre-installed educational software, productivity tools, and learning applications for immediate use.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-teal-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Zap className="h-12 w-12 text-teal-600 mb-4" />
-                <CardTitle>Technical Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  6-month technical support including troubleshooting, software updates, and basic training.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-teal-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Laptop className="h-12 w-12 text-teal-600 mb-4" />
-                <CardTitle>Digital Literacy Training</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Free digital literacy training programs to help recipients make the most of their devices.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-teal-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Smartphone className="h-12 w-12 text-teal-600 mb-4" />
-                <CardTitle>Warranty Coverage</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Limited warranty coverage for hardware issues and free repair services during support period.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-teal-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Tablet className="h-12 w-12 text-teal-600 mb-4" />
-                <CardTitle>Ongoing Updates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Regular software updates and security patches to keep devices running smoothly and safely.
+              Check if the device matches  video and functions as shown
                 </p>
               </CardContent>
             </Card>
@@ -327,10 +265,7 @@ export default function ElectronicsPage() {
                   <CardTitle className="text-red-600">What We Cannot Accept</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="outline" className="text-red-600 border-red-600">✗</Badge>
-                    <span>Devices with cracked screens</span>
-                  </div>
+               
                   <div className="flex items-center space-x-2">
                     <Badge variant="outline" className="text-red-600 border-red-600">✗</Badge>
                     <span>Water-damaged electronics</span>
@@ -343,10 +278,7 @@ export default function ElectronicsPage() {
                     <Badge variant="outline" className="text-red-600 border-red-600">✗</Badge>
                     <span>Non-functional devices</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="outline" className="text-red-600 border-red-600">✗</Badge>
-                    <span>Devices without chargers</span>
-                  </div>
+            
                 </CardContent>
               </Card>
             </div>
@@ -363,7 +295,7 @@ export default function ElectronicsPage() {
             <Button size="lg" className="bg-white text-teal-600 hover:bg-teal-50 px-8 py-3 text-lg font-semibold">
               Donate Electronics
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-teal-600 px-8 py-3 text-lg font-semibold">
+            <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-teal-600 px-8 py-3 text-lg font-semibold">
               Request Digital Devices
             </Button>
           </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { Shirt, Star, Users, Shield, Recycle, Heart } from 'lucide-react';
+import { Shirt, Star, Users, Shield} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,11 +12,19 @@ export const metadata: Metadata = {
 
 export default function ClothesPage() {
   return (
-    <main className="min-h-screen pt-24 pb-16">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-purple-600 to-purple-800 text-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
+      <section 
+        className="relative h-screen flex items-center" 
+        style={{ 
+          backgroundImage: "url('/images/clothes-bg.jpg')", 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/20 rounded-full">
                 <Shirt className="h-16 w-16" />
@@ -32,7 +40,7 @@ export default function ClothesPage() {
               <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
                 Donate Clothes
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
                 Request Clothing
               </Button>
             </div>
@@ -199,7 +207,7 @@ export default function ClothesPage() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Our Clothing Program Features</h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             <Card className="border-purple-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Shield className="h-12 w-12 text-purple-600 mb-4" />
@@ -212,7 +220,7 @@ export default function ClothesPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-purple-200 hover:shadow-lg transition-shadow">
+            {/* <Card className="border-purple-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Recycle className="h-12 w-12 text-purple-600 mb-4" />
                 <CardTitle>Anti-Resale Tracking</CardTitle>
@@ -222,7 +230,7 @@ export default function ClothesPage() {
                   Digital tracking system prevents resale and ensures donations reach those who truly need them.
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="border-purple-200 hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -236,7 +244,7 @@ export default function ClothesPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-purple-200 hover:shadow-lg transition-shadow">
+            {/* <Card className="border-purple-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Heart className="h-12 w-12 text-purple-600 mb-4" />
                 <CardTitle>Size Matching</CardTitle>
@@ -246,9 +254,9 @@ export default function ClothesPage() {
                   Advanced size matching system ensures recipients get properly fitting clothes for comfort and dignity.
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="border-purple-200 hover:shadow-lg transition-shadow">
+            {/* <Card className="border-purple-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Shirt className="h-12 w-12 text-purple-600 mb-4" />
                 <CardTitle>Professional Cleaning</CardTitle>
@@ -258,8 +266,8 @@ export default function ClothesPage() {
                   All donated clothes are professionally cleaned and sanitized before distribution to recipients.
                 </p>
               </CardContent>
-            </Card>
-
+            </Card> */}
+{/* 
             <Card className="border-purple-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Star className="h-12 w-12 text-purple-600 mb-4" />
@@ -270,7 +278,7 @@ export default function ClothesPage() {
                   Special collection for formal wear, interview clothes, and celebration outfits for important life events.
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </section>
@@ -351,7 +359,7 @@ export default function ClothesPage() {
             <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
               Donate Clothes
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+            <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
               Request Clothing
             </Button>
           </div>
