@@ -34,6 +34,7 @@ const navigationItems = [
       { name: 'Electronics', href: '/electronics/request', icon: '💻' },
     ]
   },
+  { name: 'Volunteer', href: '/volunteer', icon: '🤝' },
   { name: 'About', href: '/about', icon: '❤️' },
   { name: 'Contact', href: '/contact', icon: '📞' },
 ];
@@ -50,7 +51,7 @@ export default function Navbar() {
   const [authMode, setAuthMode] = useState<'signup' | 'login'>('signup');
 
   // Auth state
-  const { isAuthenticated, userType, sender, receiver, logoutSender, logoutReceiver } = useAuth();
+  const { isAuthenticated, userType, sender, receiver, volunteer, logoutSender, logoutReceiver, logoutVolunteer } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -128,6 +129,8 @@ const activeItem = navigationItems.find(
       logoutSender();
     } else if (userType === 'receiver') {
       logoutReceiver();
+    } else if (userType === 'volunteer') {
+      logoutVolunteer();
     }
   };
 
@@ -136,6 +139,8 @@ const activeItem = navigationItems.find(
       return sender.email.split('@')[0];
     } else if (receiver) {
       return receiver.phone_number;
+    } else if (volunteer) {
+      return volunteer.full_name;
     }
     return '';
   };
@@ -255,7 +260,7 @@ const activeItem = navigationItems.find(
                         {getUserDisplayName()}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        ({userType === 'sender' ? 'Donor' : 'Recipient'})
+                        ({userType === 'sender' ? 'Donor' : userType === 'receiver' ? 'Recipient' : 'Volunteer'})
                       </span>
                     </div>
                     <Button
@@ -396,7 +401,7 @@ const activeItem = navigationItems.find(
                               {getUserDisplayName()}
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {userType === 'sender' ? 'Donor' : 'Recipient'}
+                              {userType === 'sender' ? 'Donor' : userType === 'receiver' ? 'Recipient' : 'Volunteer'}
                             </div>
                           </div>
                         </div>

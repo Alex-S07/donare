@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { DonationSender, DonationReceiver } from '@/types/database';
+import { DonationSender, DonationReceiver, Volunteer } from '@/types/database';
 
 // Auth context types
 interface AuthContextType {
@@ -19,9 +19,16 @@ interface AuthContextType {
   loginReceiver: (token: string) => void;
   logoutReceiver: () => void;
   
+  // Volunteer authentication
+  volunteer: Volunteer | null;
+  volunteerLoading: boolean;
+  volunteerToken: string | null;
+  loginVolunteer: (token: string) => void;
+  logoutVolunteer: () => void;
+  
   // General auth state
   isAuthenticated: boolean;
-  userType: 'sender' | 'receiver' | null;
+  userType: 'sender' | 'receiver' | 'volunteer' | null;
   
   // Session management
   sessionExpiring: boolean;
@@ -33,6 +40,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Storage keys
 const SENDER_TOKEN_KEY = 'donare_sender_token';
 const RECEIVER_TOKEN_KEY = 'donare_receiver_token';
+const VOLUNTEER_TOKEN_KEY = 'donare_volunteer_token';
 
 // Session warning time (5 minutes before expiry)
 const SESSION_WARNING_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -47,6 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [receiver, setReceiver] = useState<DonationReceiver | null>(null);
   const [receiverLoading, setReceiverLoading] = useState(true);
   const [receiverToken, setReceiverToken] = useState<string | null>(null);
+  
+  // Volunteer state
+  const [volunteer, setVolunteer] = useState<Volunteer | null>(null);
+  const [volunteerLoading, setVolunteerLoading] = useState(true);
+  const [volunteerToken, setVolunteerToken] = useState<string | null>(null);
   
   // Session management
   const [sessionExpiring, setSessionExpiring] = useState(false);
@@ -73,10 +86,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setReceiverLoading(false);
         }
+
+        // Check for volunteer token
+        const storedVolunteerToken = localStorage.getItem(VOLUNTEER_TOKEN_KEY);
+        if (storedVolunteerToken) {
+          setVolunteerToken(storedVolunteerToken);
+          await validateVolunteerToken(storedVolunteerToken);
+        } else {
+          setVolunteerLoading(false);
+        }
       } catch (error) {
         console.error('Auth initialization error:', error);
         setSenderLoading(false);
         setReceiverLoading(false);
+        setVolunteerLoading(false);
       }
     };
 
@@ -141,8 +164,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Validate volunteer token
+  const validateVolunteerToken = async (token: string) => {
+    try {
+      const response = await fetch('/api/auth/validate-volunteer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setVolunteer(data.volunteer);
+        // Volunteers don't have session expiry like senders/receivers
+      } else {
+        // Token invalid, clear it
+        localStorage.removeItem(VOLUNTEER_TOKEN_KEY);
+        setVolunteerToken(null);
+      }
+    } catch (error) {
+      console.error('Volunteer token validation error:', error);
+      localStorage.removeItem(VOLUNTEER_TOKEN_KEY);
+      setVolunteerToken(null);
+    } finally {
+      setVolunteerLoading(false);
+    }
+  };
+
   // Start session monitoring
-  const startSessionMonitoring = (expiresAt: string | null, userType: 'sender' | 'receiver') => {
+  const startSessionMonitoring = (expiresAt: string | null, userType: 'sender' | 'receiver' | 'volunteer') => {
     if (!expiresAt) return;
 
     const expiryTime = new Date(expiresAt).getTime();
@@ -153,8 +205,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Session already expired
       if (userType === 'sender') {
         logoutSender();
-      } else {
+      } else if (userType === 'receiver') {
         logoutReceiver();
+      } else if (userType === 'volunteer') {
+        logoutVolunteer();
       }
       return;
     }
@@ -174,8 +228,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Auto logout
             if (userType === 'sender') {
               logoutSender();
-            } else {
+            } else if (userType === 'receiver') {
               logoutReceiver();
+            } else if (userType === 'volunteer') {
+              logoutVolunteer();
             }
             return null;
           }
@@ -243,9 +299,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Login volunteer
+  const loginVolunteer = (token: string) => {
+    localStorage.setItem(VOLUNTEER_TOKEN_KEY, token);
+    setVolunteerToken(token);
+    validateVolunteerToken(token);
+  };
+
+  // Logout volunteer
+  const logoutVolunteer = async () => {
+    try {
+      if (volunteerToken) {
+        await fetch('/api/auth/logout-volunteer', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${volunteerToken}`
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Volunteer logout error:', error);
+    } finally {
+      localStorage.removeItem(VOLUNTEER_TOKEN_KEY);
+      setVolunteerToken(null);
+      setVolunteer(null);
+      setSessionExpiring(false);
+      setTimeUntilExpiry(null);
+    }
+  };
+
   // Computed values
-  const isAuthenticated = !!(sender || receiver);
-  const userType = sender ? 'sender' : receiver ? 'receiver' : null;
+  const isAuthenticated = !!(sender || receiver || volunteer);
+  const userType = sender ? 'sender' : receiver ? 'receiver' : volunteer ? 'volunteer' : null;
 
   const value: AuthContextType = {
     sender,
@@ -259,6 +344,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     receiverToken,
     loginReceiver,
     logoutReceiver,
+    
+    volunteer,
+    volunteerLoading,
+    volunteerToken,
+    loginVolunteer,
+    logoutVolunteer,
     
     isAuthenticated,
     userType,
@@ -293,4 +384,10 @@ export function useSenderAuth() {
 export function useReceiverAuth() {
   const { receiver, receiverLoading, receiverToken, loginReceiver, logoutReceiver } = useAuth();
   return { receiver, loading: receiverLoading, token: receiverToken, login: loginReceiver, logout: logoutReceiver };
+}
+
+// Hook for volunteer-specific auth
+export function useVolunteerAuth() {
+  const { volunteer, volunteerLoading, volunteerToken, loginVolunteer, logoutVolunteer } = useAuth();
+  return { volunteer, loading: volunteerLoading, token: volunteerToken, login: loginVolunteer, logout: logoutVolunteer };
 }

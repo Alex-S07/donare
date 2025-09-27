@@ -621,6 +621,47 @@ export class AuthService {
     return { accessToken };
   }
 
+  // ===== VOLUNTEER AUTHENTICATION =====
+
+  // Generate volunteer JWT tokens
+  static generateVolunteerTokens(volunteerId: string, email: string) {
+    const payload = { volunteerId, email, userType: 'volunteer' };
+
+    const accessToken = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: '24h', // 24 hours for volunteers
+      issuer: 'donare-volunteer',
+      audience: 'donare-platform'
+    });
+
+    return { accessToken };
+  }
+
+  // Get volunteer from token
+  static async getVolunteerFromToken(token: string): Promise<any | null> {
+    try {
+      const decoded = this.verifyToken(token);
+
+      if (decoded.userType !== 'volunteer') {
+        return null;
+      }
+
+      const { data: volunteer, error } = await supabaseAdmin
+        .from('volunteers')
+        .select('*')
+        .eq('id', decoded.volunteerId)
+        .eq('status', 'active')
+        .single();
+
+      if (error || !volunteer) {
+        return null;
+      }
+
+      return volunteer;
+    } catch (error) {
+      return null;
+    }
+  }
+
   // Authenticate receiver with phone and password
   static async authenticateReceiver(
     credentials: ReceiverLoginRequest,
