@@ -3,17 +3,37 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Heart, LogOut, User } from 'lucide-react';
+import { Menu, X, Heart, LogOut, User, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import UserTypeSelectionModal from '@/components/auth/user-type-selection-modal';
 import SenderAuthModal from '@/components/auth/sender-auth-modal';
 import ReceiverRegistrationModal from '@/components/auth/receiver-registration-modal';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 import { usePathname } from 'next/navigation';
+
 const navigationItems = [
   { name: 'Money', href: '/money', icon: '💰' },
-  { name: 'Donations', href: '/donations', icon: '🎁' },
+  { 
+    name: 'Donations', 
+    href: '/donations', 
+    icon: '🎁',
+    hasDropdown: true,
+    dropdownItems: [
+      { name: 'All Donations', href: '/donations', icon: '🎁' },
+      { name: 'Clothes', href: '/clothes/request', icon: '👕' },
+      { name: 'Education', href: '/education/request', icon: '📚' },
+      { name: 'Household', href: '/household/request', icon: '🏠' },
+      { name: 'Medical', href: '/medical/request', icon: '🏥' },
+      { name: 'Electronics', href: '/electronics/request', icon: '💻' },
+    ]
+  },
   { name: 'About', href: '/about', icon: '❤️' },
   { name: 'Contact', href: '/contact', icon: '📞' },
 ];
@@ -156,30 +176,72 @@ const activeItem = navigationItems.find(
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-1 ml-8">
                 {navigationItems.map((item) => (
-                  <Link key={item.name} href={item.href}>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`relative px-4 py-2 rounded-lg transition-all duration-300 ${
-                        activeItem === item.name
-                          ? 'bg-primary text-primary-foreground shadow-donare'
-                          : 'text-foreground hover:bg-primary/10 hover:text-primary'
-                      }`}
-                    >
-                      <span className="flex items-center space-x-2 text-sm font-medium">
-                        <span className="text-base">{item.icon}</span>
-                        <span>{item.name}</span>
-                      </span>
-                      {activeItem === item.name && (
+                  <div key={item.name}>
+                    {item.hasDropdown ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`relative px-4 py-2 rounded-lg transition-all duration-300 cursor-pointer ${
+                              activeItem === item.name
+                                ? 'bg-primary text-primary-foreground shadow-donare'
+                                : 'text-foreground hover:bg-primary/10 hover:text-primary'
+                            }`}
+                          >
+                            <span className="flex items-center space-x-2 text-sm font-medium">
+                              <span className="text-base">{item.icon}</span>
+                              <span>{item.name}</span>
+                              <ChevronDown className="h-3 w-3" />
+                            </span>
+                            {activeItem === item.name && (
+                              <motion.div
+                                layoutId="activeIndicator"
+                                className="absolute inset-0 bg-primary rounded-lg -z-10"
+                                initial={false}
+                                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                              />
+                            )}
+                          </motion.div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-56">
+                          {item.dropdownItems?.map((dropdownItem) => (
+                            <DropdownMenuItem key={dropdownItem.name} asChild>
+                              <Link href={dropdownItem.href} className="flex items-center space-x-2">
+                                <span className="text-base">{dropdownItem.icon}</span>
+                                <span>{dropdownItem.name}</span>
+                              </Link>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <Link href={item.href}>
                         <motion.div
-                          layoutId="activeIndicator"
-                          className="absolute inset-0 bg-primary rounded-lg -z-10"
-                          initial={false}
-                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                        />
-                      )}
-                    </motion.div>
-                  </Link>
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`relative px-4 py-2 rounded-lg transition-all duration-300 ${
+                            activeItem === item.name
+                              ? 'bg-primary text-primary-foreground shadow-donare'
+                              : 'text-foreground hover:bg-primary/10 hover:text-primary'
+                          }`}
+                        >
+                          <span className="flex items-center space-x-2 text-sm font-medium">
+                            <span className="text-base">{item.icon}</span>
+                            <span>{item.name}</span>
+                          </span>
+                          {activeItem === item.name && (
+                            <motion.div
+                              layoutId="activeIndicator"
+                              className="absolute inset-0 bg-primary rounded-lg -z-10"
+                              initial={false}
+                              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                            />
+                          )}
+                        </motion.div>
+                      </Link>
+                    )}
+                  </div>
                 ))}
               </div>
 
@@ -283,18 +345,43 @@ const activeItem = navigationItems.find(
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
                     >
-                      <Link href={item.href} onClick={closeMenu}>
-                        <div
-                          className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                            activeItem === item.name
-                              ? 'bg-primary text-primary-foreground shadow-donare'
-                              : 'text-foreground hover:bg-primary/10 hover:text-primary'
-                          }`}
-                        >
-                          <span className="text-xl">{item.icon}</span>
-                          <span className="font-medium">{item.name}</span>
+                      {item.hasDropdown ? (
+                        <div className="space-y-1">
+                          <div
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                              activeItem === item.name
+                                ? 'bg-primary text-primary-foreground shadow-donare'
+                                : 'text-foreground hover:bg-primary/10 hover:text-primary'
+                            }`}
+                          >
+                            <span className="text-xl">{item.icon}</span>
+                            <span className="font-medium">{item.name}</span>
+                          </div>
+                          <div className="ml-6 space-y-1">
+                            {item.dropdownItems?.map((dropdownItem, dropdownIndex) => (
+                              <Link key={dropdownItem.name} href={dropdownItem.href} onClick={closeMenu}>
+                                <div className="flex items-center space-x-3 px-4 py-2 rounded-lg transition-all duration-300 text-foreground hover:bg-primary/10 hover:text-primary">
+                                  <span className="text-lg">{dropdownItem.icon}</span>
+                                  <span className="font-medium text-sm">{dropdownItem.name}</span>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                      </Link>
+                      ) : (
+                        <Link href={item.href} onClick={closeMenu}>
+                          <div
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                              activeItem === item.name
+                                ? 'bg-primary text-primary-foreground shadow-donare'
+                                : 'text-foreground hover:bg-primary/10 hover:text-primary'
+                            }`}
+                          >
+                            <span className="text-xl">{item.icon}</span>
+                            <span className="font-medium">{item.name}</span>
+                          </div>
+                        </Link>
+                      )}
                     </motion.div>
                   ))}
 
