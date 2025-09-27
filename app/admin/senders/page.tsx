@@ -145,71 +145,71 @@ export default function SendersManagement() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Sender Management</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Sender Management</h2>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               Monitor donation senders and their activity
             </p>
           </div>
-          <Button onClick={fetchSenders} disabled={isLoading}>
+          <Button onClick={fetchSenders} disabled={isLoading} className="w-full sm:w-auto">
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Senders</p>
-                  <p className="text-2xl font-bold text-gray-900">{senders.length}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Senders</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{senders.length}</p>
                 </div>
-                <Users className="h-8 w-8 text-blue-600" />
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Active Sessions</p>
-                  <p className="text-2xl font-bold text-green-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Active Sessions</p>
+                  <p className="text-lg sm:text-2xl font-bold text-green-600">
                     {getActiveSessionsCount()}
                   </p>
                 </div>
-                <Shield className="h-8 w-8 text-green-600" />
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Google Auth</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Google Auth</p>
+                  <p className="text-lg sm:text-2xl font-bold text-blue-600">
                     {senders.filter(s => s.provider === 'google').length}
                   </p>
                 </div>
-                <Globe className="h-8 w-8 text-blue-600" />
+                <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Email OTP</p>
-                  <p className="text-2xl font-bold text-green-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Email OTP</p>
+                  <p className="text-lg sm:text-2xl font-bold text-green-600">
                     {senders.filter(s => s.provider === 'email_otp').length}
                   </p>
                 </div>
-                <Mail className="h-8 w-8 text-green-600" />
+                <Mail className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
@@ -217,8 +217,8 @@ export default function SendersManagement() {
 
         {/* Filters */}
         <Card>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="search">Search</Label>
                 <div className="relative">
@@ -298,48 +298,50 @@ export default function SendersManagement() {
                 {filteredSenders.map((sender) => (
                   <div
                     key={sender.id}
-                    className="p-4 border rounded-lg hover:bg-gray-50 space-y-4"
+                    className="p-3 sm:p-4 border rounded-lg hover:bg-gray-50 space-y-3 sm:space-y-4"
                   >
                     {/* Header with profile info */}
-                    <div className="flex items-start space-x-4">
+                    <div className="flex items-start space-x-3 sm:space-x-4">
                       <div className="flex-shrink-0">
                         {sender.profile_picture_url ? (
                           <img
                             src={sender.profile_picture_url}
                             alt={sender.full_name || sender.email}
-                            className="h-12 w-12 rounded-full object-cover"
+                            className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-                            <User className="h-6 w-6 text-blue-600" />
+                          <div className="h-10 w-10 sm:h-12 sm:w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <User className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                           </div>
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold text-gray-900 truncate">
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-2">
+                          <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">
                             {sender.full_name || sender.email}
                           </h3>
-                          {getProviderBadge(sender.provider)}
-                          {getStatusBadge(sender.is_active, sender.session_expires_at)}
+                          <div className="flex flex-wrap gap-2">
+                            {getProviderBadge(sender.provider)}
+                            {getStatusBadge(sender.is_active, sender.session_expires_at)}
+                          </div>
                         </div>
                         
-                        <div className="text-sm text-gray-600 space-y-1">
-                          <div className="flex items-center space-x-1">
-                            <Mail className="h-4 w-4" />
-                            <span>{sender.email}</span>
+                        <div className="text-xs sm:text-sm text-gray-600 space-y-1">
+                          <div className="flex items-center space-x-1 truncate">
+                            <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="truncate">{sender.email}</span>
                           </div>
                           {sender.phone_number && (
-                            <div className="flex items-center space-x-1">
-                              <Phone className="h-4 w-4" />
-                              <span>{sender.phone_number}</span>
+                            <div className="flex items-center space-x-1 truncate">
+                              <Phone className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <span className="truncate">{sender.phone_number}</span>
                             </div>
                           )}
                           {sender.city && sender.state && (
-                            <div className="flex items-center space-x-1">
-                              <MapPin className="h-4 w-4" />
-                              <span>{sender.city}, {sender.state}</span>
+                            <div className="flex items-center space-x-1 truncate">
+                              <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <span className="truncate">{sender.city}, {sender.state}</span>
                             </div>
                           )}
                         </div>
@@ -347,41 +349,41 @@ export default function SendersManagement() {
                     </div>
 
                     {/* Activity and stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 text-xs sm:text-sm">
                       <div className="flex items-center space-x-1 text-gray-600">
-                        <Calendar className="h-4 w-4" />
-                        <span>Joined {formatDate(sender.created_at)}</span>
+                        <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">Joined {formatDate(sender.created_at)}</span>
                       </div>
                       <div className="flex items-center space-x-1 text-gray-600">
-                        <Clock className="h-4 w-4" />
-                        <span>Last login {formatDate(sender.last_login_at)}</span>
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">Last login {formatDate(sender.last_login_at)}</span>
                       </div>
                       <div className="flex items-center space-x-1 text-gray-600">
-                        <Shield className="h-4 w-4" />
-                        <span>{sender.total_sessions} sessions</span>
+                        <Shield className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">{sender.total_sessions} sessions</span>
                       </div>
                       <div className="flex items-center space-x-1 text-gray-600">
-                        <DollarSign className="h-4 w-4" />
-                        <span>{sender.total_donations_count} donations</span>
+                        <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">{sender.total_donations_count} donations</span>
                       </div>
                     </div>
 
                     {/* Additional info if available */}
                     {(sender.total_donated_amount > 0 || sender.last_activity_at) && (
                       <div className="pt-2 border-t border-gray-200">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
                           {sender.total_donated_amount > 0 && (
                             <div className="flex items-center space-x-1">
-                              <DollarSign className="h-4 w-4 text-green-600" />
-                              <span className="font-medium text-green-600">
+                              <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 flex-shrink-0" />
+                              <span className="font-medium text-green-600 truncate">
                                 Total donated: ₹{sender.total_donated_amount.toLocaleString()}
                               </span>
                             </div>
                           )}
                           {sender.last_activity_at && (
                             <div className="flex items-center space-x-1">
-                              <Activity className="h-4 w-4" />
-                              <span>Last activity: {formatDate(sender.last_activity_at)}</span>
+                              <Activity className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <span className="truncate">Last activity: {formatDate(sender.last_activity_at)}</span>
                             </div>
                           )}
                         </div>

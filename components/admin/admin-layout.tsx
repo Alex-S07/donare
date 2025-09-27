@@ -101,8 +101,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // Handle responsive behavior
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024);
-      if (window.innerWidth >= 1024) {
+      const isMobileSize = window.innerWidth < 768;
+      setIsMobile(isMobileSize);
+      
+      // Auto-hide sidebar on mobile
+      if (isMobileSize) {
         setIsSidebarOpen(false);
       }
     };
@@ -156,7 +159,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={closeSidebar}
         />
       )}
@@ -172,8 +175,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           stiffness: 300,
           damping: 30
         }}
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 shadow-lg lg:shadow-none ${
-          isMobile ? '' : 'lg:translate-x-0'
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 shadow-lg md:shadow-none ${
+          isMobile ? '' : 'md:translate-x-0'
         }`}
       >
         <div className="flex flex-col h-full">
@@ -186,7 +189,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden"
+              className="md:hidden"
               onClick={toggleSidebar}
             >
               <X className="h-4 w-4" />
@@ -255,43 +258,43 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </motion.aside>
 
       {/* Main Content */}
-      <div className={`transition-all duration-300 ${isMobile ? 'ml-0' : 'lg:ml-64'}`}>
+      <div className={`transition-all duration-300 ${isMobile ? 'ml-0' : 'md:ml-64'}`}>
         {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden"
+                className="md:hidden"
                 onClick={toggleSidebar}
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
                   {sidebarItems.find(item => item.href === pathname)?.title || 'Admin Panel'}
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500 truncate">
                   Welcome back, {admin.username}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
                 <Search className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Badge variant="secondary">Online</Badge>
+              <Badge variant="secondary" className="hidden sm:flex">Online</Badge>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

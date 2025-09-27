@@ -194,71 +194,71 @@ export default function ReceiversManagement() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Receiver Management</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Receiver Management</h2>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               Manage donation receiver applications and approvals
             </p>
           </div>
-          <Button onClick={fetchReceivers} disabled={isLoading}>
+          <Button onClick={fetchReceivers} disabled={isLoading} className="w-full sm:w-auto">
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Applications</p>
-                  <p className="text-2xl font-bold text-gray-900">{receivers.length}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Applications</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900">{receivers.length}</p>
                 </div>
-                <Users className="h-8 w-8 text-blue-600" />
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Pending Review</p>
-                  <p className="text-2xl font-bold text-yellow-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Pending Review</p>
+                  <p className="text-lg sm:text-2xl font-bold text-yellow-600">
                     {receivers.filter(r => r.status === 'pending').length}
                   </p>
                 </div>
-                <Clock className="h-8 w-8 text-yellow-600" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Approved</p>
-                  <p className="text-2xl font-bold text-green-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Approved</p>
+                  <p className="text-lg sm:text-2xl font-bold text-green-600">
                     {receivers.filter(r => r.status === 'approved').length}
                   </p>
                 </div>
-                <CheckCircle className="h-8 w-8 text-green-600" />
+                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Rejected</p>
-                  <p className="text-2xl font-bold text-red-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Rejected</p>
+                  <p className="text-lg sm:text-2xl font-bold text-red-600">
                     {receivers.filter(r => r.status === 'rejected').length}
                   </p>
                 </div>
-                <XCircle className="h-8 w-8 text-red-600" />
+                <XCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-600 flex-shrink-0 ml-2" />
               </div>
             </CardContent>
           </Card>
@@ -266,8 +266,8 @@ export default function ReceiversManagement() {
 
         {/* Filters */}
         <Card>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="search">Search</Label>
                 <div className="relative">
@@ -348,78 +348,84 @@ export default function ReceiversManagement() {
                 {filteredReceivers.map((receiver) => (
                   <div
                     key={receiver.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                    className="p-3 sm:p-4 border rounded-lg hover:bg-gray-50 space-y-3 sm:space-y-4"
                   >
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-semibold text-gray-900">
-                          {receiver.form_data?.organization_name || receiver.form_data?.full_name || 'Unknown'}
-                        </h3>
-                        {getTypeBadge(receiver.receiver_type)}
-                        {getStatusBadge(receiver.status)}
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                            {receiver.form_data?.organization_name || receiver.form_data?.full_name || 'Unknown'}
+                          </h3>
+                          <div className="flex flex-wrap gap-2">
+                            {getTypeBadge(receiver.receiver_type)}
+                            {getStatusBadge(receiver.status)}
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm text-gray-600">
+                          <div className="flex items-center space-x-1">
+                            <Phone className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="truncate">{receiver.phone_number}</span>
+                          </div>
+                          {receiver.email && (
+                            <div className="flex items-center space-x-1">
+                              <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <span className="truncate">{receiver.email}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center space-x-1">
+                            <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="truncate">Applied {formatDate(receiver.submitted_at)}</span>
+                          </div>
+                        </div>
                       </div>
                       
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <Phone className="h-4 w-4" />
-                          <span>{receiver.phone_number}</span>
-                        </div>
-                        {receiver.email && (
-                          <div className="flex items-center space-x-1">
-                            <Mail className="h-4 w-4" />
-                            <span>{receiver.email}</span>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedReceiver(receiver);
+                            setShowDetailsModal(true);
+                          }}
+                          className="w-full sm:w-auto"
+                        >
+                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                          <span className="text-xs sm:text-sm">View Details</span>
+                        </Button>
+                        
+                        {receiver.status === 'pending' && (
+                          <div className="flex space-x-2">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setSelectedReceiver(receiver);
+                                setApprovalAction('approve');
+                                generateRandomPassword();
+                                setShowApprovalModal(true);
+                              }}
+                              className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none"
+                            >
+                              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                              <span className="text-xs sm:text-sm">Approve</span>
+                            </Button>
+                            
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedReceiver(receiver);
+                                setApprovalAction('reject');
+                                setShowApprovalModal(true);
+                              }}
+                              className="flex-1 sm:flex-none"
+                            >
+                              <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                              <span className="text-xs sm:text-sm">Reject</span>
+                            </Button>
                           </div>
                         )}
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-4 w-4" />
-                          <span>Applied {formatDate(receiver.submitted_at)}</span>
-                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedReceiver(receiver);
-                          setShowDetailsModal(true);
-                        }}
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        View Details
-                      </Button>
-                      
-                      {receiver.status === 'pending' && (
-                        <>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setSelectedReceiver(receiver);
-                              setApprovalAction('approve');
-                              generateRandomPassword();
-                              setShowApprovalModal(true);
-                            }}
-                            className="bg-green-600 hover:bg-green-700"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Approve
-                          </Button>
-                          
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedReceiver(receiver);
-                              setApprovalAction('reject');
-                              setShowApprovalModal(true);
-                            }}
-                          >
-                            <XCircle className="h-4 w-4 mr-2" />
-                            Reject
-                          </Button>
-                        </>
-                      )}
                     </div>
                   </div>
                 ))}
