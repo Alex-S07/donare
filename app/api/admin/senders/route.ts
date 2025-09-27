@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    // Build query with session count
+    // Build query with enhanced profile data
     let query = supabaseAdmin
       .from('donation_senders')
       .select(`
@@ -29,15 +29,23 @@ export async function GET(request: NextRequest) {
         provider,
         provider_id,
         created_at,
-        last_login_at,
+        last_login,
         session_expires_at,
-        login_attempts,
         is_active,
-        (
-          SELECT COUNT(*)
-          FROM sender_sessions
-          WHERE sender_id = donation_senders.id
-        ) as total_sessions
+        full_name,
+        phone_number,
+        first_name,
+        last_name,
+        profile_picture_url,
+        date_of_birth,
+        address,
+        city,
+        state,
+        country,
+        pincode,
+        last_activity_at,
+        total_donations_count,
+        total_donated_amount
       `)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);

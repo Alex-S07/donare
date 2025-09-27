@@ -77,6 +77,7 @@ const sidebarItems = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [admin, setAdmin] = useState<AdminUser | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -97,6 +98,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
   }, [router]);
 
+  // Handle responsive behavior
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   const handleLogout = async () => {
     try {
       await fetch('/api/admin/auth/logout', {
@@ -116,6 +131,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const closeSidebar = () => {
+    if (isMobile) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   if (!admin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -130,17 +151,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div
+      {isSidebarOpen && isMobile && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
+          onClick={closeSidebar}
         />
       )}
 
       {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      <motion.aside
+        initial={false}
+        animate={{
+          x: isSidebarOpen ? 0 : (isMobile ? -256 : 0),
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30
+        }}
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 shadow-lg lg:shadow-none ${
+          isMobile ? '' : 'lg:translate-x-0'
         }`}
       >
         <div className="flex flex-col h-full">
@@ -176,7 +209,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           ? 'bg-blue-100 text-blue-700 border border-blue-200'
                           : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                       }`}
-                      onClick={() => setIsSidebarOpen(false)}
+                      onClick={closeSidebar}
                     >
                       <Icon className="h-5 w-5" />
                       <span className="font-medium">{item.title}</span>
@@ -219,10 +252,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </Card>
           </div>
         </div>
-      </aside>
+      </motion.aside>
 
       {/* Main Content */}
-      <div className="lg:ml-64">
+      <div className={`transition-all duration-300 ${isMobile ? 'ml-0' : 'lg:ml-64'}`}>
         {/* Top Header */}
         <header className="bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">

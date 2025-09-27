@@ -206,7 +206,7 @@ export default function AdminLoginPage() {
             </div>
 
             {/* Demo Credentials */}
-            {process.env.NODE_ENV === 'development' && (
+            {/* {process.env.NODE_ENV === 'development' && (
               <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h4 className="text-sm font-semibold text-blue-800 mb-2">Demo Credentials</h4>
                 <p className="text-sm text-blue-700">
@@ -214,7 +214,7 @@ export default function AdminLoginPage() {
                   <strong>Password:</strong> admin123
                 </p>
               </div>
-            )}
+            )} */}
           </CardContent>
         </Card>
 

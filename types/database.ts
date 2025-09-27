@@ -33,6 +33,38 @@ export interface Database {
           last_login?: string | null;
         };
       };
+      sender_otps: {
+        Row: {
+          id: string;
+          email: string;
+          otp_code: string;
+          created_at: string;
+          expires_at: string;
+          used: boolean;
+          ip_address: string | null;
+          user_agent: string | null;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          otp_code: string;
+          created_at?: string;
+          expires_at: string;
+          used?: boolean;
+          ip_address?: string | null;
+          user_agent?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          otp_code?: string;
+          created_at?: string;
+          expires_at?: string;
+          used?: boolean;
+          ip_address?: string | null;
+          user_agent?: string | null;
+        };
+      };
       money_donations: {
         Row: {
           id: number;
@@ -118,6 +150,21 @@ export interface Database {
           updated_at: string;
           last_login: string | null;
           session_expires_at: string | null;
+          full_name: string | null;
+          phone_number: string | null;
+          first_name: string | null;
+          last_name: string | null;
+          profile_picture_url: string | null;
+          date_of_birth: string | null;
+          address: string | null;
+          city: string | null;
+          state: string | null;
+          country: string | null;
+          pincode: string | null;
+          preferences: any | null;
+          last_activity_at: string | null;
+          total_donations_count: number;
+          total_donated_amount: number;
         };
         Insert: {
           id?: string;
@@ -130,6 +177,21 @@ export interface Database {
           updated_at?: string;
           last_login?: string | null;
           session_expires_at?: string | null;
+          full_name?: string | null;
+          phone_number?: string | null;
+          first_name?: string | null;
+          last_name?: string | null;
+          profile_picture_url?: string | null;
+          date_of_birth?: string | null;
+          address?: string | null;
+          city?: string | null;
+          state?: string | null;
+          country?: string | null;
+          pincode?: string | null;
+          preferences?: any | null;
+          last_activity_at?: string | null;
+          total_donations_count?: number;
+          total_donated_amount?: number;
         };
         Update: {
           id?: string;
@@ -142,6 +204,21 @@ export interface Database {
           updated_at?: string;
           last_login?: string | null;
           session_expires_at?: string | null;
+          full_name?: string | null;
+          phone_number?: string | null;
+          first_name?: string | null;
+          last_name?: string | null;
+          profile_picture_url?: string | null;
+          date_of_birth?: string | null;
+          address?: string | null;
+          city?: string | null;
+          state?: string | null;
+          country?: string | null;
+          pincode?: string | null;
+          preferences?: any | null;
+          last_activity_at?: string | null;
+          total_donations_count?: number;
+          total_donated_amount?: number;
         };
       };
       donation_receivers: {
@@ -311,6 +388,21 @@ export interface DonationSender {
   updated_at: string;
   last_login: string | null;
   session_expires_at: string | null;
+  full_name: string | null;
+  phone_number: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  profile_picture_url: string | null;
+  date_of_birth: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  pincode: string | null;
+  preferences: any | null;
+  last_activity_at: string | null;
+  total_donations_count: number;
+  total_donated_amount: number;
 }
 
 export interface DonationReceiver {

@@ -13,6 +13,13 @@ import {
   ReceiverLoginResponse
 } from '@/types/database';
 
+// Type assertions to handle Supabase type issues
+const adminUsersTable = supabaseAdmin.from('admin_users') as any;
+const donationSendersTable = supabaseAdmin.from('donation_senders') as any;
+const donationReceiversTable = supabaseAdmin.from('donation_receivers') as any;
+const senderOtpsTable = supabaseAdmin.from('sender_otps') as any;
+const adminAuditLogsTable = supabaseAdmin.from('admin_audit_logs') as any;
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-super-secret-refresh-key-change-in-production';
 const JWT_EXPIRES_IN = '1h';
@@ -119,8 +126,7 @@ export class AuthService {
       }
 
       // Find admin user
-      const { data: admin, error } = await supabaseAdmin
-        .from('admin_users')
+      const { data: admin, error } = await adminUsersTable
         .select('*')
         .eq('username', username)
         .eq('is_active', true)
@@ -146,8 +152,7 @@ export class AuthService {
       }
 
       // Update last login
-      await supabaseAdmin
-        .from('admin_users')
+      await adminUsersTable
         .update({ last_login: new Date().toISOString() })
         .eq('id', admin.id);
 
@@ -203,8 +208,7 @@ export class AuthService {
     try {
       const decoded = this.verifyToken(token);
       
-      const { data: admin, error } = await supabaseAdmin
-        .from('admin_users')
+      const { data: admin, error } = await adminUsersTable
         .select('*')
         .eq('id', decoded.adminId)
         .eq('is_active', true)
@@ -230,8 +234,7 @@ export class AuthService {
     userAgent?: string
   ) {
     try {
-      await supabaseAdmin
-        .from('admin_audit_logs')
+      await adminAuditLogsTable
         .insert({
           admin_id: adminId,
           action,
@@ -254,8 +257,7 @@ export class AuthService {
     try {
       const passwordHash = await this.hashPassword(password);
       
-      const { data: admin, error } = await supabaseAdmin
-        .from('admin_users')
+      const { data: admin, error } = await adminUsersTable
         .insert({
           username,
           email,
@@ -291,8 +293,7 @@ export class AuthService {
   ): Promise<{ success: boolean; error?: string }> {
     try {
       // Get current admin
-      const { data: admin, error } = await supabaseAdmin
-        .from('admin_users')
+      const { data: admin, error } = await adminUsersTable
         .select('password_hash')
         .eq('id', adminId)
         .single();
@@ -312,8 +313,7 @@ export class AuthService {
       const newPasswordHash = await this.hashPassword(newPassword);
 
       // Update password
-      const { error: updateError } = await supabaseAdmin
-        .from('admin_users')
+      const { error: updateError } = await adminUsersTable
         .update({ password_hash: newPasswordHash })
         .eq('id', adminId);
 
@@ -346,12 +346,12 @@ export class AuthService {
   static async authenticateSenderWithGoogle(
     email: string,
     providerId: string,
-    ipAddress: string
+    ipAddress: string,
+    profileData?: any
   ): Promise<SenderAuthResponse> {
     try {
       // Check if sender already exists
-      let { data: sender, error } = await supabaseAdmin
-        .from('donation_senders')
+      let { data: sender, error } = await donationSendersTable
         .select('*')
         .eq('email', email)
         .eq('provider', 'google')
@@ -363,15 +363,25 @@ export class AuthService {
 
       // Create new sender if doesn't exist
       if (!sender) {
-        const { data: newSender, error: insertError } = await supabaseAdmin
-          .from('donation_senders')
-          .insert({
-            email,
-            provider: 'google',
-            provider_id: providerId,
-            email_verified: true,
-            is_active: true
-          })
+        const senderData: any = {
+          email,
+          provider: 'google',
+          provider_id: providerId,
+          email_verified: true,
+          is_active: true
+        };
+
+        // Add profile data if available
+        if (profileData) {
+          senderData.full_name = profileData.name;
+          senderData.first_name = profileData.given_name;
+          senderData.last_name = profileData.family_name;
+          senderData.profile_picture_url = profileData.picture;
+          senderData.email_verified = profileData.verified_email || true;
+        }
+
+        const { data: newSender, error: insertError } = await donationSendersTable
+          .insert(senderData)
           .select()
           .single();
 
@@ -389,8 +399,7 @@ export class AuthService {
       // Update last login and session expiry
       const sessionExpiresAt = new Date(Date.now() + SENDER_SESSION_TIMEOUT).toISOString();
 
-      await supabaseAdmin
-        .from('donation_senders')
+      await donationSendersTable
         .update({
           last_login: new Date().toISOString(),
           session_expires_at: sessionExpiresAt
@@ -417,21 +426,38 @@ export class AuthService {
   }
 
   // Send OTP for email authentication
-  static async sendSenderOTP(email: string): Promise<{ success: boolean; error?: string }> {
+  static async sendSenderOTP(email: string, ipAddress?: string, userAgent?: string): Promise<{ success: boolean; error?: string }> {
     try {
       // Generate 6-digit OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
-      // Store OTP in a temporary table or cache (for demo, we'll use a simple approach)
-      // In production, use Redis or a dedicated OTP table
+      // Store OTP in database
+      const { error: insertError } = await senderOtpsTable
+        .insert({
+          email,
+          otp_code: otp,
+          expires_at: expiresAt.toISOString(),
+          ip_address: ipAddress || null,
+          user_agent: userAgent || null
+        });
 
-      // For now, we'll simulate sending OTP
-      console.log(`OTP for ${email}: ${otp}`);
+      if (insertError) {
+        console.error('Failed to store OTP:', insertError);
+        return { success: false, error: 'Failed to generate OTP' };
+      }
 
-      // TODO: Integrate with email service (SendGrid, AWS SES, etc.)
+      // Send OTP via email
+      const { EmailService } = await import('./email');
+      const emailResult = await EmailService.sendOTPEmail(email, otp);
+
+      if (!emailResult.success) {
+        return { success: false, error: emailResult.error || 'Failed to send OTP email' };
+      }
 
       return { success: true };
     } catch (error) {
+      console.error('Send OTP error:', error);
       return { success: false, error: 'Failed to send OTP' };
     }
   }
@@ -443,15 +469,33 @@ export class AuthService {
     ipAddress: string
   ): Promise<SenderAuthResponse> {
     try {
-      // TODO: Verify OTP from cache/database
-      // For demo purposes, accept any 6-digit OTP
+      // Validate OTP format
       if (!/^\d{6}$/.test(otp)) {
         return { success: false, error: 'Invalid OTP format' };
       }
 
+      // Verify OTP from database
+      const { data: otpRecord, error: otpError } = await senderOtpsTable
+        .select('*')
+        .eq('email', email)
+        .eq('otp_code', otp)
+        .eq('used', false)
+        .gt('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (otpError || !otpRecord) {
+        return { success: false, error: 'Invalid or expired OTP' };
+      }
+
+      // Mark OTP as used
+      await senderOtpsTable
+        .update({ used: true })
+        .eq('id', otpRecord.id);
+
       // Check if sender already exists
-      let { data: sender, error } = await supabaseAdmin
-        .from('donation_senders')
+      let { data: sender, error } = await donationSendersTable
         .select('*')
         .eq('email', email)
         .eq('provider', 'email')
@@ -463,8 +507,7 @@ export class AuthService {
 
       // Create new sender if doesn't exist
       if (!sender) {
-        const { data: newSender, error: insertError } = await supabaseAdmin
-          .from('donation_senders')
+        const { data: newSender, error: insertError } = await donationSendersTable
           .insert({
             email,
             provider: 'email',
@@ -488,8 +531,7 @@ export class AuthService {
       // Update last login and session expiry
       const sessionExpiresAt = new Date(Date.now() + SENDER_SESSION_TIMEOUT).toISOString();
 
-      await supabaseAdmin
-        .from('donation_senders')
+      await donationSendersTable
         .update({
           last_login: new Date().toISOString(),
           session_expires_at: sessionExpiresAt,
@@ -525,8 +567,7 @@ export class AuthService {
         return null;
       }
 
-      const { data: sender, error } = await supabaseAdmin
-        .from('donation_senders')
+      const { data: sender, error } = await donationSendersTable
         .select('*')
         .eq('id', decoded.senderId)
         .eq('is_active', true)
@@ -539,8 +580,7 @@ export class AuthService {
       // Check if session is still valid
       if (sender.session_expires_at && new Date(sender.session_expires_at) < new Date()) {
         // Session expired, clear it
-        await supabaseAdmin
-          .from('donation_senders')
+        await donationSendersTable
           .update({ session_expires_at: null })
           .eq('id', sender.id);
 
@@ -556,8 +596,7 @@ export class AuthService {
   // Logout sender
   static async logoutSender(senderId: string): Promise<{ success: boolean }> {
     try {
-      await supabaseAdmin
-        .from('donation_senders')
+      await donationSendersTable
         .update({ session_expires_at: null })
         .eq('id', senderId);
 
@@ -599,8 +638,7 @@ export class AuthService {
       }
 
       // Find approved receiver
-      const { data: receiver, error } = await supabaseAdmin
-        .from('donation_receivers')
+      const { data: receiver, error } = await donationReceiversTable
         .select('*')
         .eq('phone_number', phone_number)
         .eq('status', 'approved')
@@ -636,8 +674,7 @@ export class AuthService {
       // Update last login and session expiry
       const sessionExpiresAt = new Date(Date.now() + RECEIVER_SESSION_TIMEOUT).toISOString();
 
-      await supabaseAdmin
-        .from('donation_receivers')
+      await donationReceiversTable
         .update({
           last_login: new Date().toISOString(),
           session_expires_at: sessionExpiresAt
@@ -678,8 +715,7 @@ export class AuthService {
         return null;
       }
 
-      const { data: receiver, error } = await supabaseAdmin
-        .from('donation_receivers')
+      const { data: receiver, error } = await donationReceiversTable
         .select('*')
         .eq('id', decoded.receiverId)
         .eq('status', 'approved')
@@ -692,8 +728,7 @@ export class AuthService {
       // Check if session is still valid
       if (receiver.session_expires_at && new Date(receiver.session_expires_at) < new Date()) {
         // Session expired, clear it
-        await supabaseAdmin
-          .from('donation_receivers')
+        await donationReceiversTable
           .update({ session_expires_at: null })
           .eq('id', receiver.id);
 
@@ -709,8 +744,7 @@ export class AuthService {
   // Logout receiver
   static async logoutReceiver(receiverId: string): Promise<{ success: boolean }> {
     try {
-      await supabaseAdmin
-        .from('donation_receivers')
+      await donationReceiversTable
         .update({ session_expires_at: null })
         .eq('id', receiverId);
 
@@ -730,8 +764,7 @@ export class AuthService {
   ): Promise<{ success: boolean; error?: string; credentials?: { phone_number: string; password: string } }> {
     try {
       // Get receiver details
-      const { data: receiver, error } = await supabaseAdmin
-        .from('donation_receivers')
+      const { data: receiver, error } = await donationReceiversTable
         .select('*')
         .eq('id', receiverId)
         .eq('status', 'pending')
@@ -746,8 +779,7 @@ export class AuthService {
       const passwordHash = await this.hashPassword(password);
 
       // Update receiver status
-      const { error: updateError } = await supabaseAdmin
-        .from('donation_receivers')
+      const { error: updateError } = await donationReceiversTable
         .update({
           status: 'approved',
           password_hash: passwordHash,
@@ -789,8 +821,7 @@ export class AuthService {
     rejectionReason: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await supabaseAdmin
-        .from('donation_receivers')
+      const { error } = await donationReceiversTable
         .update({
           status: 'rejected',
           rejection_reason: rejectionReason

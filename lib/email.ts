@@ -64,26 +64,27 @@ export class EmailService {
         </html>
       `;
 
-      // Use Supabase's built-in email sending via the auth system
-      // We'll send a magic link but customize the template to show OTP
-      const { error } = await supabaseAdmin.auth.admin.generateLink({
-        type: 'magiclink',
-        email: email,
-        options: {
-          data: {
-            otp: otp,
-            purpose: 'donor_authentication'
-          }
-        }
-      });
+      // For development, we'll use a simple console log
+      // In production, integrate with a proper email service like SendGrid, AWS SES, or Resend
+      console.log('='.repeat(50));
+      console.log(`📧 OTP EMAIL FOR: ${email}`);
+      console.log('='.repeat(50));
+      console.log(emailHtml);
+      console.log('='.repeat(50));
+      console.log(`🔑 OTP CODE: ${otp}`);
+      console.log('='.repeat(50));
 
-      if (error) {
-        console.error('Supabase email error:', error);
-        return { 
-          success: false, 
-          error: `Failed to send OTP email: ${error.message}` 
-        };
-      }
+      // TODO: Replace with actual email service integration
+      // Example with Resend:
+      // const { Resend } = require('resend');
+      // const resend = new Resend(process.env.RESEND_API_KEY);
+      // 
+      // const { data, error } = await resend.emails.send({
+      //   from: 'Donare <noreply@donare.org>',
+      //   to: [email],
+      //   subject: 'Your Donare OTP',
+      //   html: emailHtml,
+      // });
 
       return { success: true };
 
