@@ -198,7 +198,7 @@ export default function TermsPage() {
           <div className="space-y-3 text-slate-700">
             <p>
               <strong>Governing Law:</strong> These Terms are governed by the laws of India. 
-              Any disputes will be subject to the jurisdiction of courts in Mumbai, Maharashtra.
+              Any disputes will be subject to the jurisdiction of courts in Kuttikanam, Idukki.
             </p>
             <p>
               <strong>Contact Information:</strong> For questions about these Terms, please contact us at{' '}

@@ -82,7 +82,7 @@ export default function PostOAuthForm({ userInfo, onComplete, onSkip }: PostOAut
       onComplete(validatedData);
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.errors[0].message);
+        setError(err.format()._errors[0] || 'Validation error');
       } else {
         setError('An error occurred. Please try again.');
       }
@@ -188,7 +188,7 @@ export default function PostOAuthForm({ userInfo, onComplete, onSkip }: PostOAut
                     <Input
                       id="city"
                       type="text"
-                      placeholder="Mumbai"
+                      placeholder="Idukki"
                       {...form.register('city')}
                       className="mt-1"
                     />

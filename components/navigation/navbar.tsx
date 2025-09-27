@@ -13,11 +13,9 @@ import ReceiverRegistrationModal from '@/components/auth/receiver-registration-m
 import { usePathname } from 'next/navigation';
 const navigationItems = [
   { name: 'Money', href: '/money', icon: '💰' },
-  { name: 'Clothes', href: '/clothes', icon: '👕' },
-  { name: 'Education', href: '/education', icon: '📚' },
-  { name: 'Household', href: '/household', icon: '🏠' },
-  { name: 'Medical', href: '/medical', icon: '🏥' },
-  { name: 'Electronics', href: '/electronics', icon: '💻' },
+  { name: 'Donations', href: '/donations', icon: '🎁' },
+  { name: 'About', href: '/about', icon: '❤️' },
+  { name: 'Contact', href: '/contact', icon: '📞' },
 ];
 
 export default function Navbar() {

@@ -75,8 +75,8 @@ const Footer = () => {
 
   const contactInfo = [
     { icon: Mail, text: 'support@donare.org', href: 'mailto:support@donare.org' },
-    { icon: Phone, text: '+91 98765 43210', href: 'tel:+919876543210' },
-    { icon: MapPin, text: 'Mumbai, Maharashtra, India', href: '#' },
+    { icon: Phone, text: '+91 99999 99999', href: 'tel:+ 919876543210' },
+    { icon: MapPin, text: 'Kuttikanam, Idukki, India', href: '#' },
   ];
 
   return (
