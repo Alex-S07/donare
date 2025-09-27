@@ -12,28 +12,38 @@ export const metadata: Metadata = {
 
 export default function HouseholdPage() {
   return (
-    <main className="min-h-screen pt-24 pb-16">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-orange-600 to-orange-800 text-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
+ 
+
+            <section 
+        className="relative h-screen flex items-center" 
+        style={{ 
+          backgroundImage: "url('/images/household-bg.jpg')", 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/20 rounded-full">
                 <Home className="h-16 w-16" />
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6">
-              Household Essentials
+                Household Essentials
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-orange-100">
-              Creating comfortable homes through essential furniture and household items
+            <p className="text-xl md:text-2xl mb-8 text-purple-100">
+             Creating comfortable homes through essential furniture and household items
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-3 text-lg font-semibold">
-                Donate Household Items
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg font-semibold">
+       Donate Household Items
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-3 text-lg font-semibold">
-                Request Home Essentials
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-purple-600 px-8 py-3 text-lg font-semibold">
+                 Request Home Essentials
               </Button>
             </div>
           </div>
@@ -62,7 +72,7 @@ export default function HouseholdPage() {
                   <li>• Sofas and chairs</li>
                   <li>• Tables and desks</li>
                   <li>• Storage solutions</li>
-                  <li>• Children's furniture</li>
+                  <li>• Children&aposs furniture</li>
                 </ul>
               </CardContent>
             </Card>
@@ -112,7 +122,7 @@ export default function HouseholdPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="text-center">
               <CardHeader>
                 <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
@@ -141,24 +151,12 @@ export default function HouseholdPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  3
-                </div>
-                <CardTitle>Matching & Allocation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Items are matched with families based on their specific needs and living situation.
-                </p>
-              </CardContent>
-            </Card>
+       
 
             <Card className="text-center">
               <CardHeader>
                 <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  4
+                  3
                 </div>
                 <CardTitle>Delivery & Setup</CardTitle>
               </CardHeader>
@@ -295,7 +293,7 @@ export default function HouseholdPage() {
             <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-3 text-lg font-semibold">
               Donate Household Items
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-3 text-lg font-semibold">
+            <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-orange-600 px-8 py-3 text-lg font-semibold">
               Request Home Essentials
             </Button>
           </div>
