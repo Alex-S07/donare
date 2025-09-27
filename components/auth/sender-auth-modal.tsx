@@ -85,8 +85,8 @@ export default function SenderAuthModal({ open, onClose, mode }: SenderAuthModal
 
     try {
       // Initialize Google OAuth flow
-      const response = await fetch('/api/auth/google-oauth-url', {
-        method: 'POST',
+      const response = await fetch('/api/auth/google-oauth', {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
 

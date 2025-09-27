@@ -61,12 +61,19 @@ export async function POST(request: NextRequest) {
 // Generate Google OAuth URL
 export async function GET() {
   try {
-    // In production, generate actual Google OAuth URL
-    const googleOAuthUrl = `https://accounts.google.com/oauth/authorize?` +
+    // Check if required environment variables are present
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_REDIRECT_URI) {
+      throw new Error('Missing Google OAuth configuration');
+    }
+
+    // Generate Google OAuth URL
+    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
-      `redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&` +
+      `redirect_uri=${encodeURIComponent(process.env.GOOGLE_REDIRECT_URI)}&` +
       `response_type=code&` +
-      `scope=email profile&` +
+      `scope=${encodeURIComponent('email profile')}&` +
+      `access_type=offline&` +
+      `prompt=consent&` +
       `state=${Math.random().toString(36).substring(7)}`;
 
     return NextResponse.json({
