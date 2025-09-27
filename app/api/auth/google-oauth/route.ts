@@ -66,12 +66,12 @@ export async function GET() {
       throw new Error('Missing Google OAuth configuration');
     }
 
-    // Generate Google OAuth URL
+    // Generate Google OAuth URL with additional scopes
     const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
       `redirect_uri=${encodeURIComponent(process.env.GOOGLE_REDIRECT_URI)}&` +
       `response_type=code&` +
-      `scope=${encodeURIComponent('email profile')}&` +
+      `scope=${encodeURIComponent('email profile openid')}&` +
       `access_type=offline&` +
       `prompt=consent&` +
       `state=${Math.random().toString(36).substring(7)}`;

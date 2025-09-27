@@ -32,12 +32,8 @@ export async function POST(request: NextRequest) {
       throw new Error(tokenData.error_description || 'Failed to exchange code for tokens');
     }
 
-    // Get user info from Google
-    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: {
-        Authorization: `Bearer ${tokenData.access_token}`,
-      },
-    });
+    // Get user info from Google with additional profile data
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo?access_token=' + tokenData.access_token);
 
     const userData = await userResponse.json();
 
@@ -45,16 +41,29 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to get user information from Google');
     }
 
+    // Extract additional profile information
+    const profileData = {
+      email: userData.email,
+      id: userData.id,
+      name: userData.name,
+      given_name: userData.given_name,
+      family_name: userData.family_name,
+      picture: userData.picture,
+      verified_email: userData.verified_email,
+      locale: userData.locale
+    };
+
     // Get client IP
     const clientIP = request.headers.get('x-forwarded-for') || 
                     request.headers.get('x-real-ip') || 
                     '127.0.0.1';
 
-    // Authenticate sender with Google
+    // Authenticate sender with Google and profile data
     const result = await AuthService.authenticateSenderWithGoogle(
-      userData.email,
-      userData.id,
-      clientIP
+      profileData.email,
+      profileData.id,
+      clientIP,
+      profileData
     );
 
     if (result.success) {

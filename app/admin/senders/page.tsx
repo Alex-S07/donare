@@ -17,7 +17,12 @@ import {
   Filter,
   Calendar,
   Globe,
-  Shield
+  Shield,
+  Phone,
+  MapPin,
+  User,
+  DollarSign,
+  Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -32,6 +37,20 @@ interface DonationSender {
   login_attempts: number;
   is_active: boolean;
   total_sessions: number;
+  full_name: string | null;
+  phone_number: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  profile_picture_url: string | null;
+  date_of_birth: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  pincode: string | null;
+  last_activity_at: string | null;
+  total_donations_count: number;
+  total_donated_amount: number;
 }
 
 export default function SendersManagement() {
@@ -76,7 +95,9 @@ export default function SendersManagement() {
       (statusFilter === 'active' && sender.is_active) ||
       (statusFilter === 'inactive' && !sender.is_active);
     const matchesSearch = searchQuery === '' || 
-      sender.email.toLowerCase().includes(searchQuery.toLowerCase());
+      sender.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (sender.full_name && sender.full_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (sender.phone_number && sender.phone_number.includes(searchQuery));
     
     return matchesProvider && matchesStatus && matchesSearch;
   });
@@ -204,7 +225,7 @@ export default function SendersManagement() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="search"
-                    placeholder="Search by email..."
+                    placeholder="Search by name, email, or phone..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -277,32 +298,95 @@ export default function SendersManagement() {
                 {filteredSenders.map((sender) => (
                   <div
                     key={sender.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                    className="p-4 border rounded-lg hover:bg-gray-50 space-y-4"
                   >
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-semibold text-gray-900">
-                          {sender.email}
-                        </h3>
-                        {getProviderBadge(sender.provider)}
-                        {getStatusBadge(sender.is_active, sender.session_expires_at)}
+                    {/* Header with profile info */}
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0">
+                        {sender.profile_picture_url ? (
+                          <img
+                            src={sender.profile_picture_url}
+                            alt={sender.full_name || sender.email}
+                            className="h-12 w-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <User className="h-6 w-6 text-blue-600" />
+                          </div>
+                        )}
                       </div>
                       
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-4 w-4" />
-                          <span>Joined {formatDate(sender.created_at)}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-semibold text-gray-900 truncate">
+                            {sender.full_name || sender.email}
+                          </h3>
+                          {getProviderBadge(sender.provider)}
+                          {getStatusBadge(sender.is_active, sender.session_expires_at)}
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-4 w-4" />
-                          <span>Last login {formatDate(sender.last_login_at)}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Shield className="h-4 w-4" />
-                          <span>{sender.total_sessions} sessions</span>
+                        
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <div className="flex items-center space-x-1">
+                            <Mail className="h-4 w-4" />
+                            <span>{sender.email}</span>
+                          </div>
+                          {sender.phone_number && (
+                            <div className="flex items-center space-x-1">
+                              <Phone className="h-4 w-4" />
+                              <span>{sender.phone_number}</span>
+                            </div>
+                          )}
+                          {sender.city && sender.state && (
+                            <div className="flex items-center space-x-1">
+                              <MapPin className="h-4 w-4" />
+                              <span>{sender.city}, {sender.state}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
+
+                    {/* Activity and stats */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <Calendar className="h-4 w-4" />
+                        <span>Joined {formatDate(sender.created_at)}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <Clock className="h-4 w-4" />
+                        <span>Last login {formatDate(sender.last_login_at)}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <Shield className="h-4 w-4" />
+                        <span>{sender.total_sessions} sessions</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <DollarSign className="h-4 w-4" />
+                        <span>{sender.total_donations_count} donations</span>
+                      </div>
+                    </div>
+
+                    {/* Additional info if available */}
+                    {(sender.total_donated_amount > 0 || sender.last_activity_at) && (
+                      <div className="pt-2 border-t border-gray-200">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                          {sender.total_donated_amount > 0 && (
+                            <div className="flex items-center space-x-1">
+                              <DollarSign className="h-4 w-4 text-green-600" />
+                              <span className="font-medium text-green-600">
+                                Total donated: ₹{sender.total_donated_amount.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          {sender.last_activity_at && (
+                            <div className="flex items-center space-x-1">
+                              <Activity className="h-4 w-4" />
+                              <span>Last activity: {formatDate(sender.last_activity_at)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

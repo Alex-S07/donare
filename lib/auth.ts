@@ -346,7 +346,8 @@ export class AuthService {
   static async authenticateSenderWithGoogle(
     email: string,
     providerId: string,
-    ipAddress: string
+    ipAddress: string,
+    profileData?: any
   ): Promise<SenderAuthResponse> {
     try {
       // Check if sender already exists
@@ -362,14 +363,25 @@ export class AuthService {
 
       // Create new sender if doesn't exist
       if (!sender) {
+        const senderData: any = {
+          email,
+          provider: 'google',
+          provider_id: providerId,
+          email_verified: true,
+          is_active: true
+        };
+
+        // Add profile data if available
+        if (profileData) {
+          senderData.full_name = profileData.name;
+          senderData.first_name = profileData.given_name;
+          senderData.last_name = profileData.family_name;
+          senderData.profile_picture_url = profileData.picture;
+          senderData.email_verified = profileData.verified_email || true;
+        }
+
         const { data: newSender, error: insertError } = await donationSendersTable
-          .insert({
-            email,
-            provider: 'google',
-            provider_id: providerId,
-            email_verified: true,
-            is_active: true
-          })
+          .insert(senderData)
           .select()
           .single();
 
