@@ -3,6 +3,8 @@ import { ReactNode } from "react";
 import Navbar from "@/components/navigation/navbar";
 import ErrorBoundary from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/hooks/use-auth";
+import SessionExpiryModal from "@/components/auth/session-expiry-modal";
 
 export const metadata = {
   title: "Donare - Connecting Hearts, Changing Lives",
@@ -62,14 +64,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="font-sans antialiased ">
         <ErrorBoundary>
-     
-
-      <Navbar  />
-
-          <main role="main" className="min-h-screen ">
-            {children}
-          </main>
-          <Toaster />
+          <AuthProvider>
+            <Navbar />
+            <main role="main">
+              {children}
+            </main>
+            <SessionExpiryModal />
+            <Toaster />
+          </AuthProvider>
         </ErrorBoundary>
       </body>
     </html>

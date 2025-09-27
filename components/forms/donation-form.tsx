@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import { Heart, Send, CheckCircle } from 'lucide-react';
+import { Heart, Send, CheckCircle, CreditCard } from 'lucide-react';
 
 const donationSchema = z.object({
   type: z.enum(['donate', 'request']),
@@ -42,6 +43,7 @@ interface DonationFormProps {
 export default function DonationForm({ type, category, onSubmit }: DonationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const router = useRouter();
 
   const form = useForm<DonationFormData>({
     resolver: zodResolver(donationSchema),
@@ -64,19 +66,36 @@ export default function DonationForm({ type, category, onSubmit }: DonationFormP
 
   const handleSubmit = async (data: DonationFormData) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Simulate API call
+      if (type === 'donate' && category === 'money') {
+        // For money donations, store data and redirect to payment
+        const donationData = {
+          name: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          amount: parseFloat(data.amount || '0')
+        };
+
+        // Store in sessionStorage for payment page
+        sessionStorage.setItem('donationData', JSON.stringify(donationData));
+
+        // Redirect to payment page
+        router.push('/money/payment');
+        return;
+      }
+
+      // For other types, simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       if (onSubmit) {
         onSubmit(data);
       }
-      
+
       setIsSubmitted(true);
       toast.success(
-        type === 'donate' 
-          ? 'Thank you for your generous donation! We will contact you soon.' 
+        type === 'donate'
+          ? 'Thank you for your generous donation! We will contact you soon.'
           : 'Your request has been submitted successfully. We will review it and get back to you.'
       );
     } catch (error) {
@@ -242,16 +261,23 @@ export default function DonationForm({ type, category, onSubmit }: DonationFormP
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {type === 'donate' ? 'Donation Amount ($)' : 'Amount Needed ($)'}
+                        {type === 'donate' ? 'Donation Amount (₹)' : 'Amount Needed (₹)'}
                       </FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder={type === 'donate' ? 'Enter donation amount' : 'Enter amount needed'} 
-                          {...field} 
+                        <Input
+                          type="number"
+                          min="1"
+                          max="1000000"
+                          placeholder={type === 'donate' ? 'Enter donation amount' : 'Enter amount needed'}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
+                      {type === 'donate' && (
+                        <p className="text-xs text-muted-foreground">
+                          Minimum: ₹1 | Maximum: ₹10,00,000
+                        </p>
+                      )}
                     </FormItem>
                   )}
                 />
@@ -386,8 +412,17 @@ export default function DonationForm({ type, category, onSubmit }: DonationFormP
                   </div>
                 ) : (
                   <div className="flex items-center space-x-2">
-                    <Send className="h-4 w-4" />
-                    <span>Submit {type === 'donate' ? 'Donation' : 'Request'}</span>
+                    {type === 'donate' && category === 'money' ? (
+                      <>
+                        <CreditCard className="h-4 w-4" />
+                        <span>Proceed to Payment</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        <span>Submit {type === 'donate' ? 'Donation' : 'Request'}</span>
+                      </>
+                    )}
                   </div>
                 )}
               </Button>
