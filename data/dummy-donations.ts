@@ -11,10 +11,6 @@ const clothesItems: DonationItem[] = [
     targetDemographics: ['Children'],
     availability: 'High Demand',
     impactStatement: 'Keep a child warm this winter',
-    testimonial: {
-      text: 'My daughter loves her new jacket. It fits perfectly and keeps her cozy!',
-      author: 'Priya M., Mother of 2'
-    },
     tags: ['winter', 'outerwear', 'urgent'],
     isUrgent: true
   },
@@ -134,10 +130,6 @@ const educationItems: DonationItem[] = [
     targetDemographics: ['Children', 'Students'],
     availability: 'High Demand',
     impactStatement: 'Foundation for a bright future',
-    testimonial: {
-      text: 'These books helped my son excel in his studies. Thank you!',
-      author: 'Sunita D., Mother'
-    },
     tags: ['textbooks', 'primary', 'NCERT', 'urgent'],
     isUrgent: true
   },
@@ -264,10 +256,6 @@ const householdItems: DonationItem[] = [
     targetDemographics: ['Families', 'Elderly'],
     availability: 'High Demand',
     impactStatement: 'Comfort for peaceful sleep',
-    testimonial: {
-      text: 'Finally, my children sleep comfortably. These blankets are so warm!',
-      author: 'Meera S., Mother of 3'
-    },
     tags: ['bedding', 'comfort', 'sleep'],
     isUrgent: true
   },
@@ -383,10 +371,6 @@ const medicalItems: DonationItem[] = [
     targetDemographics: ['Elderly'],
     availability: 'High Demand',
     impactStatement: 'Monitor health at home',
-    testimonial: {
-      text: 'This device helps me track my BP daily. Very grateful!',
-      author: 'Ramesh G., Senior Citizen'
-    },
     tags: ['blood-pressure', 'monitoring', 'elderly'],
     isUrgent: true
   },
@@ -469,10 +453,6 @@ const electronicsItems: DonationItem[] = [
     targetDemographics: ['Students'],
     availability: 'High Demand',
     impactStatement: 'Bridge the digital divide',
-    testimonial: {
-      text: 'This laptop changed my daughter\'s education journey completely!',
-      author: 'Kavita R., Parent'
-    },
     tags: ['laptop', 'education', 'digital'],
     isUrgent: true
   },
