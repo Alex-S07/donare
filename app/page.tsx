@@ -48,7 +48,7 @@ export default function HomePage() {
         id="money"
         title="Financial Support"
         description="Financial assistance platform with transparent approval process. Income verification required with maximum assistance limits based on family size. Full transparency for medical emergencies, education support, and urgent family needs. All transactions tracked and publicly auditable."
-        backgroundImage="/images/money-bg.jpg"
+        backgroundImage="/images/money-bg.jpeg"
         icon={<DollarSign className="h-8 w-8" />}
         primaryCTA="Request Financial Aid"
         secondaryCTA="Donate Money"
